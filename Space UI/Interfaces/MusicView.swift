@@ -21,7 +21,7 @@ struct MusicView: View {
     var body: some View {
         VStack(spacing: 8) {
             HStack {
-                AutoGrid(spacing: 16) {
+                AutoStack(spacing: 16) {
                     NavigationButton(to: .lockScreen) {
                         Text("Lock")
                     }

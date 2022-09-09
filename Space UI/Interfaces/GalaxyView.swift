@@ -27,6 +27,8 @@ struct GalaxyView: View {
     let showPlanetImage: Bool
     let shapeOverlayOnSelection: Bool
     
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    
     @State var sphereAnimationProgress: CGFloat = 0.0
     @State var selectedID = 0
     @State var blackHoleAngle = Angle.zero
@@ -73,7 +75,7 @@ struct GalaxyView: View {
             NavigationButton(to: .planet) {
                 Text("Planet")
             }
-            .offset(system.safeCornerOffsets.topLeading)
+            .offset(safeCornerOffsets.topLeading)
         }
         .onAppear {
             withAnimation(.linear(duration: 0.6)) {
@@ -92,7 +94,7 @@ struct GalaxyView: View {
         }()
         let coords = PoissonDiskSampling.samples(in: CGRect(x: -1250, y: -750, width: 2500, height: 1500), inCircle: false, staticPoint: .zero, candidatePointCount: 100, rejectRadius: 130, random: random)
         showPlanetImage = random.nextBool()
-        shapeOverlayOnSelection = system.paletteStyle != .colorful || Bool.random()
+        shapeOverlayOnSelection = system.colors.paletteStyle != .colorful || Bool.random()
         var id = 0
         planets = coords.map({
             let diameter = CGFloat(random.nextDouble(in: 20...40))

@@ -16,7 +16,7 @@ struct SeedView: View {
     
     let allScreenShapeCases: [ScreenShapeCase] = [
         .circle, // This is actually used to remove the override
-        .rectangle, .hexagon, .trapezoid, .capsule
+        .rectangle, .verticalHexagon, .horizontalHexagon, .trapezoid, .capsule
     ]
     
     var isLocked: Bool {
@@ -81,7 +81,7 @@ struct SeedView: View {
                             switch shapeCase {
                             case .rectangle:
                                 return "rectangle.fill"
-                            case .hexagon:
+                            case .verticalHexagon, .horizontalHexagon:
                                 return "hexagon.fill"
                             case .trapezoid:
                                 return "triangle.fill"

@@ -22,6 +22,8 @@ struct ShieldView: View {
     let word4: String
     let word5: String
     
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    
     @ObservedObject var shipData = ShipData.shared
     @State var atomAngle = 0.0
     @State var atomDistance: CGFloat = 30
@@ -46,7 +48,7 @@ struct ShieldView: View {
             .overlay(
                 RandomWidget(random: random)
                     .frame(width: 100, height: 100, alignment: .center)
-                    .offset(system.safeCornerOffsets.topLeading)
+                    .offset(safeCornerOffsets.topLeading)
             , alignment: .topLeading)
             .overlay(
                 Spirograph(innerRadius: 42, outerRadius: 22, distance: self.atomDistance)
@@ -54,7 +56,7 @@ struct ShieldView: View {
                     .frame(width: 150, height: 150, alignment: .center)
                     .rotationEffect(Angle(degrees: self.atomAngle))
                     .overlay(Text(word2).fixedSize())
-                    .offset(system.safeCornerOffsets.topTrailing)
+                    .offset(safeCornerOffsets.topTrailing)
             , alignment: .topTrailing)
             .overlay(
                 HStack {

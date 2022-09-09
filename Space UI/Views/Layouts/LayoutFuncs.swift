@@ -40,6 +40,7 @@ extension LayoutSubview {
         var ideal = sizeThatFits(.unspecified)
         let max = sizeThatFits(.infinity)
         
+        // Bug: Many views of infinite size report 10 as their ideal size. We try to ignore those values.
         if ideal.width <= 10 {
             ideal.width = max.width
         }

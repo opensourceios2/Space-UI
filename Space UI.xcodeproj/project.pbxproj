@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 55;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -128,6 +128,12 @@
 		1B43938A23BD353F00660F96 /* CircularSegmentedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B43938823BD353F00660F96 /* CircularSegmentedView.swift */; };
 		1B43938C23BD426900660F96 /* DecorativeRaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B43938B23BD426900660F96 /* DecorativeRaysView.swift */; };
 		1B43938D23BD426900660F96 /* DecorativeRaysView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B43938B23BD426900660F96 /* DecorativeRaysView.swift */; };
+		1B46FFCA28C83EE800EBD761 /* SafeCornerOffsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B46FFC928C83EE800EBD761 /* SafeCornerOffsets.swift */; };
+		1B46FFCB28C83EE800EBD761 /* SafeCornerOffsets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B46FFC928C83EE800EBD761 /* SafeCornerOffsets.swift */; };
+		1B46FFCD28C9727700EBD761 /* DesignPrinciples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B46FFCC28C9727700EBD761 /* DesignPrinciples.swift */; };
+		1B46FFCE28C9727700EBD761 /* DesignPrinciples.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B46FFCC28C9727700EBD761 /* DesignPrinciples.swift */; };
+		1B46FFD128CBE20000EBD761 /* SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B46FFD028CBE20000EBD761 /* SystemColors.swift */; };
+		1B46FFD228CBE20000EBD761 /* SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B46FFD028CBE20000EBD761 /* SystemColors.swift */; };
 		1B48992E257B2F2300F6B16E /* RandomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B48992D257B2F2300F6B16E /* RandomWidget.swift */; };
 		1B48992F257B2F2300F6B16E /* RandomWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B48992D257B2F2300F6B16E /* RandomWidget.swift */; };
 		1B491180257D903100D32F2D /* AutoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49117F257D903100D32F2D /* AutoGrid.swift */; };
@@ -340,6 +346,9 @@
 		1B43938523BD119D00660F96 /* CircularProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressView.swift; sourceTree = "<group>"; };
 		1B43938823BD353F00660F96 /* CircularSegmentedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularSegmentedView.swift; sourceTree = "<group>"; };
 		1B43938B23BD426900660F96 /* DecorativeRaysView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecorativeRaysView.swift; sourceTree = "<group>"; };
+		1B46FFC928C83EE800EBD761 /* SafeCornerOffsets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeCornerOffsets.swift; sourceTree = "<group>"; };
+		1B46FFCC28C9727700EBD761 /* DesignPrinciples.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DesignPrinciples.swift; sourceTree = "<group>"; };
+		1B46FFD028CBE20000EBD761 /* SystemColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemColors.swift; sourceTree = "<group>"; };
 		1B48992D257B2F2300F6B16E /* RandomWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomWidget.swift; sourceTree = "<group>"; };
 		1B49117F257D903100D32F2D /* AutoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoGrid.swift; sourceTree = "<group>"; };
 		1B491188257DCD8F00D32F2D /* ShapeDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeDirection.swift; sourceTree = "<group>"; };
@@ -469,11 +478,14 @@
 		1B1C685623A704F100D610B1 /* System Appearance */ = {
 			isa = PBXGroup;
 			children = (
+				1B46FFCC28C9727700EBD761 /* DesignPrinciples.swift */,
 				1BE24F3D2347DB87008859FE /* SystemAppearance.swift */,
+				1B46FFD028CBE20000EBD761 /* SystemColors.swift */,
 				1B1C685423A7046300D610B1 /* Color.swift */,
 				1BA4B27225737E82002413D8 /* FillAndBorder.swift */,
 				1BA1698A2551E773007EB7F3 /* Font.swift */,
 				1B491188257DCD8F00D32F2D /* ShapeDirection.swift */,
+				1B46FFC928C83EE800EBD761 /* SafeCornerOffsets.swift */,
 			);
 			path = "System Appearance";
 			sourceTree = "<group>";
@@ -795,7 +807,7 @@
 				};
 			};
 			buildConfigurationList = 1BE24F1F2347DAE7008859FE /* Build configuration list for PBXProject "Space UI" */;
-			compatibilityVersion = "Xcode 13.0";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -963,6 +975,7 @@
 				1B2307CA23FB5D8800766D2E /* UserDefaults.swift in Sources */,
 				1B43934E23B6F4CF00660F96 /* ScreenShape.swift in Sources */,
 				1B491181257D903100D32F2D /* AutoGrid.swift in Sources */,
+				1B46FFCB28C83EE800EBD761 /* SafeCornerOffsets.swift in Sources */,
 				1B43938123BC616000660F96 /* PoissonDiskSampling.swift in Sources */,
 				1B43935723B6F4CF00660F96 /* NavigationButton.swift in Sources */,
 				1B43935E23B6F77200660F96 /* SystemAppearance.swift in Sources */,
@@ -974,6 +987,7 @@
 				1BF3B53623D0EC0B00161780 /* MessagesState.swift in Sources */,
 				1B7FB7DA243054FF00CDCF40 /* HostingController.swift in Sources */,
 				1BA1698C2551E773007EB7F3 /* Font.swift in Sources */,
+				1B46FFCE28C9727700EBD761 /* DesignPrinciples.swift in Sources */,
 				1B96659724229E7000377DC4 /* SceneKitView.swift in Sources */,
 				1B43937523B7D16A00660F96 /* AutoStack.swift in Sources */,
 				1B6C435723BEC15300A149F3 /* Trapezoid.swift in Sources */,
@@ -1009,6 +1023,7 @@
 				1B3BF60728977A2A00E87899 /* ParallaxView.swift in Sources */,
 				1B39723A2424069E0087CD19 /* Compass.swift in Sources */,
 				1B43935323B6F4CF00660F96 /* ComsMessageView.swift in Sources */,
+				1B46FFD228CBE20000EBD761 /* SystemColors.swift in Sources */,
 				1B3BF60928977FB100E87899 /* MusicController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1053,6 +1068,7 @@
 				1B491189257DCD8F00D32F2D /* ShapeDirection.swift in Sources */,
 				1B43938923BD353F00660F96 /* CircularSegmentedView.swift in Sources */,
 				1B43938023BC616000660F96 /* PoissonDiskSampling.swift in Sources */,
+				1B46FFD128CBE20000EBD761 /* SystemColors.swift in Sources */,
 				1B998D842499A7B0005EAA41 /* BrokenKeypadView.swift in Sources */,
 				1BE56A0C23C41FAA0025D420 /* ShipData.swift in Sources */,
 				1B32943A23AA9A4400CB91F6 /* DecorativePolygon.swift in Sources */,
@@ -1066,6 +1082,7 @@
 				1B43932823AEE10500660F96 /* Spirograph.swift in Sources */,
 				1BE24F422347DB87008859FE /* PeerSessionController.swift in Sources */,
 				1B43937423B7D16A00660F96 /* AutoStack.swift in Sources */,
+				1B46FFCA28C83EE800EBD761 /* SafeCornerOffsets.swift in Sources */,
 				1BE24F3C2347DB29008859FE /* ScreenView.swift in Sources */,
 				1B2464F324F0510600895B8D /* CircularText.swift in Sources */,
 				1B6C435623BEC15300A149F3 /* Trapezoid.swift in Sources */,
@@ -1084,6 +1101,7 @@
 				1B1C686323A7173900D610B1 /* PlanetView.swift in Sources */,
 				1B3BF60B2897898800E87899 /* LayoutFuncs.swift in Sources */,
 				1B8075002429BE6600414F6B /* NearbyShipView.swift in Sources */,
+				1B46FFCD28C9727700EBD761 /* DesignPrinciples.swift in Sources */,
 				1B1C684F23A6D2BC00D610B1 /* ButtonStyle.swift in Sources */,
 				1BDC2C9A243272130072D94B /* GridCompass.swift in Sources */,
 				1B1C684D23A6C36600D610B1 /* ExternalDisplayView.swift in Sources */,

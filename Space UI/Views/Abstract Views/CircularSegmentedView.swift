@@ -142,6 +142,7 @@ struct CircularSegmentedView: View {
                 }
             }
         }
+        .aspectRatio(1, contentMode: .fit)
     }
     
     init() {

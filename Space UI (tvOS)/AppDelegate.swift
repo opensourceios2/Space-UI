@@ -17,7 +17,7 @@ var nextEmergencyTimer: Timer?
 func replaceRootView() {
     rootHostingController = HostingController(rootView: RootView(interface: .externalDisplay, systemAppearance: system))
     iwindow?.rootViewController = rootHostingController
-    let tintColor = UIColor(displayP3Hue: CGFloat(system.primaryHue), saturation: CGFloat(system.primarySaturation), brightness: 1.0, opacity: 1.0)
+    let tintColor = UIColor(Color(color: .primary, brightness: .max))
     iwindow?.tintColor = tintColor
     if let exWindow = externalWindow {
         exWindow.rootViewController = HostingController(rootView: RootView(interface: .externalDisplay, systemAppearance: system))
@@ -39,7 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         rootHostingController = HostingController(rootView: rootView)
         rootHostingController?.view.backgroundColor = .black
         window.rootViewController = rootHostingController
-        window.tintColor = UIColor(displayP3Hue: CGFloat(system.primaryHue), saturation: CGFloat(system.primarySaturation), brightness: 1.0, opacity: 1.0)
+        window.tintColor = UIColor(Color(color: .primary, brightness: .max))
         iwindow = window
         window.makeKeyAndVisible()
         

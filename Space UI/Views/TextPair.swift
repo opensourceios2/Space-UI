@@ -12,7 +12,7 @@ struct TextPair: View {
     
     var prefersMonochrome: Bool = Bool.random()
     var monochrome: Bool {
-        prefersMonochrome || system.paletteStyle == .monochrome
+        prefersMonochrome || system.colors.paletteStyle == .monochrome
     }
     var label: String
     var value: String

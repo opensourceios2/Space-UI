@@ -31,11 +31,11 @@ struct RandomWidget: View {
             CircularSegmentedView()
         case .decorativePolygon:
             DecorativePolygon(sides: 7)
-                .stroke(Color(color: .primary, opacity: system.paletteStyle == .monochrome ? .low : .medium), lineWidth: 2)
+                .stroke(Color(color: .primary, opacity: system.colors.paletteStyle == .monochrome ? .low : .medium), lineWidth: 2)
                 .overlay(Text(label).multilineTextAlignment(.center))
         case .spirograph:
             Spirograph(innerRadius: 24, outerRadius: 43, distance: 34)
-                .stroke(Color(color: .primary, opacity: system.paletteStyle == .monochrome ? .low : .max), lineWidth: 2)
+                .stroke(Color(color: .primary, opacity: system.colors.paletteStyle == .monochrome ? .low : .max), lineWidth: 2)
                 .overlay(Text(label).multilineTextAlignment(.center))
         case .almostThereNumberText(let number):
             AlmostThereNumberText(number: number, digitCount: 4)

@@ -26,6 +26,8 @@ struct LockScreenView: View {
     let shipName = "S-Wing"
     let shipManufacturer = "Space Corp."
     
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    
     @State var topBottomRingsAngle = Angle.zero
     @State var notificationShadowColor = Color(color: .primary, opacity: .medium)
     @State var notificationOpacity = 1.0
@@ -57,7 +59,7 @@ struct LockScreenView: View {
                 HStack {
                     if brandNamePosition == .topCorner {
                         TextPair(label: shipManufacturer, value: shipName, largerFontSize: 28)
-                            .offset(system.safeCornerOffsets.topLeading)
+                            .offset(safeCornerOffsets.topLeading)
                     }
                     Spacer()
                 }
@@ -68,7 +70,7 @@ struct LockScreenView: View {
                     }
                 }
             }
-            AutoGrid(spacing: 16) {
+            AutoStack(spacing: 16) {
                 NavigationButton(to: .powerManagement) {
                     Text("Ship")
                 }
@@ -89,7 +91,7 @@ struct LockScreenView: View {
         .overlay( hasCircularSegmentedView ?
             RandomWidget(random: random)
                 .frame(width: 100, height: 100)
-                .offset(system.safeCornerOffsets.bottomLeading)
+                .offset(safeCornerOffsets.bottomLeading)
             : nil
         , alignment: .bottomLeading)
         .overlay(
@@ -101,7 +103,7 @@ struct LockScreenView: View {
                         .opacity(self.notificationOpacity)
                 }
             }
-            .offset(system.safeCornerOffsets.bottomTrailing)
+            .offset(safeCornerOffsets.bottomTrailing)
         , alignment: .bottomTrailing)
         .onAppear {
             withAnimation(Animation.easeInOut(duration: 0.75).repeatForever(autoreverses: true)) {

@@ -35,8 +35,26 @@ extension Int {
 
 struct BinaryView: View {
     
+    struct Character: Identifiable {
+        private let index: Int
+        private let digitValue: Int
+        
+        var id: Int { index }
+        var colors: FillAndBorder {
+            BinaryView.numberColors[digitValue]
+        }
+        var shapeDirection: ShapeDirection {
+            index % 2 == 0 ? .up : .down
+        }
+        
+        init(index: Int, digitValue: Int) {
+            self.index = index
+            self.digitValue = digitValue
+        }
+    }
+    
     static var numberColors: [FillAndBorder] {
-        switch system.paletteStyle {
+        switch system.colors.paletteStyle {
         case .colorful:
             return [
                 FillAndBorder(fill: Color(color: .primary, opacity: .max)),
@@ -58,27 +76,55 @@ struct BinaryView: View {
         }
     }
     
+    // Styles
+    var characterLength: CGFloat {
+        switch system.basicShape {
+        case .triangle, .diamond:
+            return 30
+        case .trapezoid:
+            return 28
+        default:
+            return 26
+        }
+    }
+    var spacing: CGFloat {
+        switch system.basicShape {
+        case .triangle:
+            return -2
+        case .trapezoid:
+            return 2
+        default:
+            return 10
+        }
+    }
+    
+    // Math
     var value = 0
     var maxValue = 0
     var base = 2
-    var digits: [Int] {
+    private var digits: [Int] {
         Int.representation(of: value, inBase: base, withDigitCount: Int.numberOfDigits(for: maxValue, inBase: base))
+    }
+    private var characters: [Character] {
+        digits.enumerated().map({ Character(index: $0.offset, digitValue: $0.element) })
     }
     
     var body: some View {
-        HStack(spacing: 10) {
-            ForEach(0..<Int.numberOfDigits(for: maxValue, inBase: base)) { i in
-                AutoShape(direction: i % 2 == 0 ? .up : .down)
-                    .foregroundColor(BinaryView.numberColors[digits[i]].fill)
-                    .frame(width: 26, height: 26, alignment: .center)
-                    .overlay(
-                        BinaryView.numberColors[digits[i]].border == nil ? nil :
-                        AutoShape(direction: i % 2 == 0 ? .up : .down)
-                            .strokeBorder(Color(color: .primary, opacity: .max), lineWidth: 2)
-                            .frame(width: 26, height: 26, alignment: .center)
-                    )
+        HStack(spacing: system.basicShape == .triangle ? 0 : 10) {
+            ForEach(characters) { char in
+                AutoShape(direction: char.shapeDirection)
+                    .foregroundColor(char.colors.fill)
+                    .frame(width: characterLength, height: characterLength, alignment: .center)
+                    .overlay {
+                        if char.colors.border != nil {
+                            AutoShape(direction: char.shapeDirection)
+                                .strokeBorder(Color(color: .primary, opacity: .max), lineWidth: 2)
+                                .frame(width: characterLength, height: characterLength, alignment: .center)
+                        }
+                    }
             }
-        }.padding(8)
+        }
+        .padding(8)
     }
 }
 

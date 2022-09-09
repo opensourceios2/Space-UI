@@ -34,6 +34,8 @@ struct ExternalDisplayView: View {
     let hasLongNumericalSection = Bool.random()
     let useGridCompassStyle = Bool.random()
     
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    
     @ObservedObject var music = MusicController.shared
     
     @State var progress1: CGFloat = 0.0
@@ -48,29 +50,32 @@ struct ExternalDisplayView: View {
             OrbitsView()
                 .overlay(
                     TextPair(label: "Realtime", value: "Orbits", largerFontSize: 50)
-                        .offset(system.safeCornerOffsets.topLeading)
+                        .offset(safeCornerOffsets.topLeading)
                 , alignment: .topLeading)
                 .overlay(
                     AutoCompass(useGridCompassStyle: self.useGridCompassStyle)
                         .frame(width: 150, height: 150)
-                        .offset(system.safeCornerOffsets.topTrailing)
+                        .offset(safeCornerOffsets.topTrailing)
                 , alignment: .topTrailing)
             HStack {
                 if self.has2textLists {
-                    VStack(spacing: 10) {
-                        RoundedRectangle(cornerRadius: system.cornerRadius(forLength: 40))
-                            .stroke(Color(color: .primary, opacity: .max), lineWidth: 4)
-                            .foregroundColor(Color.clear)
-                            .frame(height: 40)
-                            .frame(idealWidth: .infinity, maxWidth: .infinity)
-                            .overlay(Text(Lorem.words(2)))
-                        ForEach(0..<8) { _ in
-                            HStack {
-                                Text(Lorem.word())
-                                Spacer()
-                                Text(Lorem.word())
+                    ViewThatFits {
+                        VStack(spacing: 10) {
+                            RoundedRectangle(cornerRadius: system.cornerRadius(forLength: 40))
+                                .stroke(Color(color: .primary, opacity: .max), lineWidth: 4)
+                                .foregroundColor(Color.clear)
+                                .frame(height: 40)
+                                .frame(idealWidth: .infinity, maxWidth: .infinity)
+                                .overlay(Text(Lorem.words(2)))
+                            ForEach(0..<8) { _ in
+                                HStack {
+                                    Text(Lorem.word())
+                                    Spacer()
+                                    Text(Lorem.word())
+                                }
                             }
                         }
+                        EmptyView()
                     }
                 }
                 VStack {
@@ -79,7 +84,7 @@ struct ExternalDisplayView: View {
                             BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
                             Text(Lorem.word(random: self.random))
                         }
-                        AutoGrid(spacing: 16) {
+                        AutoGrid(spacing: 16, ignoreMaxSize: false) {
                             ForEach(0..<4) { _ in
                                 Image(decorative: CircleIcon.randomName(random: self.random))
                             }
@@ -89,51 +94,58 @@ struct ExternalDisplayView: View {
                             Text(Lorem.word(random: self.random))
                         }
                         if self.hasLongNumericalSection {
-                            AutoGrid(spacing: 16) {
-                                ForEach(0..<4) { _ in
-                                    Image(decorative: CircleIcon.randomName(random: self.random))
+                            ViewThatFits {
+                                HStack(alignment: .top) {
+                                    AutoGrid(spacing: 16, ignoreMaxSize: false) {
+                                        ForEach(0..<4) { _ in
+                                            Image(decorative: CircleIcon.randomName(random: self.random))
+                                        }
+                                    }
+                                    VStack {
+                                        BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
+                                        Text(Lorem.word(random: self.random))
+                                    }
                                 }
-                            }
-                            VStack {
-                                BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
-                                Text(Lorem.word(random: self.random))
+                                EmptyView()
                             }
                         }
                     }
                     HStack {
                         RandomWidget(random: self.random)
+                            .frame(width: 100)
                         VStack {
                             BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
                             Text(Lorem.word(random: self.random))
                         }
                         RandomWidget(random: self.random)
+                            .frame(width: 100)
                     }
-                    AutoGrid(spacing: 16) {
-                        ZStack {
-                            CircularProgressView(value: $progress1)
-                            Text(Lorem.word(random: self.random))
-                        }
-                        ZStack {
-                            CircularProgressView(value: $progress2)
-                            Text(Lorem.word(random: self.random))
-                        }
-                        ZStack {
-                            CircularProgressView(value: $progress3)
-                            Text(Lorem.word(random: self.random))
-                        }
-                        ZStack {
-                            CircularProgressView(value: $progress4)
-                            Text(Lorem.word(random: self.random))
-                        }
+                    HStack(spacing: 16) {
+                        CircularProgressView(value: $progress1)
+                            .overlay {
+                                Text(Lorem.word(random: self.random))
+                            }
+                        CircularProgressView(value: $progress2)
+                            .overlay {
+                                Text(Lorem.word(random: self.random))
+                            }
+                        CircularProgressView(value: $progress3)
+                            .overlay {
+                                Text(Lorem.word(random: self.random))
+                            }
+                        CircularProgressView(value: $progress4)
+                            .overlay {
+                                Text(Lorem.word(random: self.random))
+                            }
                         if hasLongNumericalSection {
-                            ZStack {
-                                CircularProgressView(value: $progress5)
-                                Text(Lorem.word(random: self.random))
-                            }
-                            ZStack {
-                                CircularProgressView(value: $progress6)
-                                Text(Lorem.word(random: self.random))
-                            }
+                            CircularProgressView(value: $progress5)
+                                .overlay {
+                                    Text(Lorem.word(random: self.random))
+                                }
+                            CircularProgressView(value: $progress6)
+                                .overlay {
+                                    Text(Lorem.word(random: self.random))
+                                }
                         }
                     }
                     .aspectRatio(hasLongNumericalSection ? 6 : 4, contentMode: .fit)

@@ -13,6 +13,12 @@ struct WeightedElement<E> {
     let element: E
 }
 
+struct WeightedDesignElement<E> {
+    let baseWeight: Double
+    let design: DesignPrinciples
+    let element: E
+}
+
 extension GKRandom {
     
     func nextInt(in range: Range<Int>) -> Int {
@@ -56,6 +62,14 @@ extension GKRandom {
             }
         }
         return array[0].element
+    }
+    
+    func nextWeightedElement<E>(in array: [WeightedDesignElement<E>], with design: DesignPrinciples) -> E? {
+        let newElements = array.map {
+            let similarity = $0.design.similarity(to: design)
+            return WeightedElement(weight: $0.baseWeight * similarity, element: $0.element)
+        }
+        return nextWeightedElement(in: newElements)
     }
     
 }

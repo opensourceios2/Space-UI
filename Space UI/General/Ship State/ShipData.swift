@@ -101,8 +101,6 @@ final class ShipData: ObservableObject {
     
     func beginEmergency() {
         isInEmergency = true
-        system.primaryHue = system.dangerHue
-        system.primarySaturation = system.dangerSaturation
         AudioController.shared.play(.alarmLoop)
         #if !os(tvOS)
         savedInterface = visibleInterface
@@ -124,8 +122,6 @@ final class ShipData: ObservableObject {
     
     func endEmergency() {
         isInEmergency = false
-        system.primaryHue = system.primaryHueCopy
-        system.primarySaturation = system.primarySaturationCopy
         AudioController.shared.stopLoopingSound(.alarmLoop)
         #if !os(tvOS)
         visibleInterface = savedInterface

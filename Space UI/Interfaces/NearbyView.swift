@@ -16,6 +16,8 @@ struct NearbyView: View {
         return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
     }()
     
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    
     var body: some View {
         AutoStack {
             NearbyShipsView(random: random)
@@ -37,12 +39,12 @@ struct NearbyView: View {
         .overlay(alignment: .topLeading) {
             RandomWidget(random: random)
                 .frame(width: 100, height: 100)
-                .offset(system.safeCornerOffsets.topLeading)
+                .offset(safeCornerOffsets.topLeading)
         }
         .overlay(alignment: .topTrailing) {
             RandomWidget(random: random)
                 .frame(width: 100, height: 100)
-                .offset(system.safeCornerOffsets.topTrailing)
+                .offset(safeCornerOffsets.topTrailing)
         }
     }
 }

@@ -10,7 +10,8 @@ import SwiftUI
 
 struct TargetingView: View {
     
-    @Environment(\.shapeDirection) var shapeDirection: ShapeDirection
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    @Environment(\.shapeDirection) private var shapeDirection: ShapeDirection
     
     @ObservedObject var shipData = ShipData.shared
     @ObservedObject var targetState = ShipData.shared.targetState
@@ -84,7 +85,7 @@ struct TargetingView: View {
         .overlay(alignment: .bottomLeading) {
             CircularProgressView(value: shipData.powerState.weaponsHavePower ? .constant(1) : .constant(0), lineWidth: nil)
                 .frame(width: 100, height: 100)
-                .offset(system.safeCornerOffsets.bottomLeading)
+                .offset(safeCornerOffsets.bottomLeading)
         }
         .overlay(alignment: .bottomTrailing) {
             HStack {
@@ -101,7 +102,7 @@ struct TargetingView: View {
                     Text("Missiles")
                 }).buttonStyle(GroupedButtonStyle(segmentPosition: .trailing, isSelected: !shipData.weaponsInLaserMode))
             }
-            .offset(system.safeCornerOffsets.bottomTrailing)
+            .offset(safeCornerOffsets.bottomTrailing)
         }
         .onAppear() {
             Timer.scheduledTimer(withTimeInterval: 0.8, repeats: true) { _ in

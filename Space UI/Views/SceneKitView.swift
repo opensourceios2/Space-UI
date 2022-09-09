@@ -32,7 +32,7 @@ struct SceneKitView: UIViewRepresentable {
         
         let ship = scene.rootNode.childNodes[0]
         let material = SCNMaterial()
-        material.diffuse.contents = UIColor(displayP3Hue: CGFloat(system.primaryHue), saturation: CGFloat(system.primarySaturation), brightness: 1.0, opacity: 1.0)
+        material.diffuse.contents = UIColor(Color(color: .primary, opacity: .max))
         material.fillMode = .lines
         ship.geometry?.materials = [material]
         ship.runAction(SCNAction.repeatForever(SCNAction.rotateBy(x: 0, y: 1, z: 0, duration: 2.5)))

@@ -28,7 +28,7 @@ struct ComsMessageView: View {
                 case .filledBackground:
                     return Color(color: .primary, brightness: .min)
                 case .filledBackgroundWithSecondaryTextColor:
-                    if system.paletteStyle == .monochrome {
+                    if system.colors.paletteStyle == .monochrome {
                         return Color(color: .primary, brightness: .min)
                     } else {
                         return Color(color: .secondary, opacity: .max)

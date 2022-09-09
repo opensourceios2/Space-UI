@@ -28,6 +28,8 @@ struct PowerManagementView: View {
         return alphaNumRepresentation
     }()
     
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    
     var body: some View {
         GeometryReader { geometry in
             AutoStack {
@@ -55,7 +57,7 @@ struct PowerManagementView: View {
                     Text("Model: \(self.model)")
                         .font(Font.spaceFont(size: 22))
                         .padding()
-                    AutoGrid(spacing: 16) {
+                    AutoStack(spacing: 16) {
                         NavigationButton(to: .lockScreen) {
                             Text("Lock")
                         }
@@ -71,12 +73,12 @@ struct PowerManagementView: View {
         .overlay(alignment: .topLeading) {
             RandomWidget(random: random)
                 .frame(width: 100, height: 100)
-                .offset(system.safeCornerOffsets.topLeading)
+                .offset(safeCornerOffsets.topLeading)
         }
         .overlay(alignment: .topTrailing) {
             RandomWidget(random: random)
                 .frame(width: 100, height: 100)
-                .offset(system.safeCornerOffsets.topTrailing)
+                .offset(safeCornerOffsets.topTrailing)
         }
     }
 }

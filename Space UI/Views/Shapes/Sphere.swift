@@ -20,7 +20,7 @@ struct Sphere: Shape {
         return Path { path in
             path.addEllipse(in: square)
             
-            if horizontal != 0 {
+            if 1 < horizontal {
                 for step in 1...horizontal {
                     let fraction = CGFloat(step) / CGFloat(horizontal+1)
                     let x = sqrt(pow(square.width/2, 2) - pow((fraction-0.5) * square.width, 2))
@@ -31,7 +31,7 @@ struct Sphere: Shape {
                 }
             }
             
-            if vertical != 0 {
+            if 1 < vertical {
                 for step in 1...vertical/2 {
                     let fraction = CGFloat(step) / CGFloat(vertical)
                     let ellipseRect = square.applying(CGAffineTransform(scaleX: cos(.pi * fraction), y: 1))

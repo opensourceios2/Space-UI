@@ -29,8 +29,9 @@ struct CircularProgressView: View {
             .padding((self.lineWidth ?? geometry.size.width/8) / 2)
             .position(x: geometry.size.width/2, y: geometry.size.height/2)
         }
-            .rotationEffect(Angle(degrees: -90))
-            .animation(Animation.easeOut(duration: 0.5))
+        .rotationEffect(Angle(degrees: -90))
+        .animation(Animation.easeOut(duration: 0.5), value: value)
+        .aspectRatio(1, contentMode: .fit)
     }
     
 //    @inlinable public init(value: CGFloat, lineWidth: CGFloat, @ViewBuilder content: () -> Inner) {

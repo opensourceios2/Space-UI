@@ -67,7 +67,7 @@ struct RootView: View {
                     .padding(.horizontal, 20)
             }
         }
-        .ignoresSafeArea(edges: system.edgesIgnoringSafeAreaForScreenShape())
+        .ignoresSafeArea(edges: system.edgesIgnoringSafeAreaForScreenShape(screenSize: UIScreen.main.bounds.size, traitCollection: UIScreen.main.traitCollection))
         
         #if DEBUG
         .overlay(alignment: .leading) {

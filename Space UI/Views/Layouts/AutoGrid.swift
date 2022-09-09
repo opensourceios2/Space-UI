@@ -14,20 +14,29 @@ import SwiftUI
 
 struct AutoGrid: Layout {
     
+    struct GridCoordinate {
+        let row: Int
+        let column: Int
+    }
+    
     var spacing: CGFloat = 20
+    var ignoreMaxSize: Bool = true
     
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let avgSubviewSize = avgSubviewSize(subviews)
-        return proposedGridAndSize(proposal: proposal, subviews: subviews, avgSubviewSize: avgSubviewSize).size
+        let idealSize = proposedGridAndSize(proposal: proposal, subviews: subviews, avgSubviewSize: avgSubviewSize).size
+        return ignoreMaxSize ? idealSize : minSize(idealSize, proposal: proposal)
     }
     
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let avgSubviewSize = avgSubviewSize(subviews)
         let proposedGridAndSize = proposedGridAndSize(proposal: proposal, subviews: subviews, avgSubviewSize: avgSubviewSize)
-        let firstSubviewPoint = CGPoint(x: bounds.minX + avgSubviewSize.width/2, y: bounds.minY + avgSubviewSize.height/2)
+        let firstSubviewPoint = CGPoint(
+            x: bounds.midX - proposedGridAndSize.size.width/2 + avgSubviewSize.width/2,
+            y: bounds.midY - proposedGridAndSize.size.height/2 + avgSubviewSize.height/2)
         
         for (index, subview) in subviews.enumerated() {
-            let gridIndex = gridIndex(subviewIndex: index, rows: proposedGridAndSize.rows, columns: proposedGridAndSize.columns)
+            let gridIndex = gridIndex(subviewIndex: index, totalColumns: proposedGridAndSize.coord.column)
             
             let point = CGPoint(
                 x: firstSubviewPoint.x + (avgSubviewSize.width + spacing) * CGFloat(gridIndex.column),
@@ -39,11 +48,11 @@ struct AutoGrid: Layout {
     
     private func avgSubviewSize(_ subviews: Subviews) -> CGSize {
         let finiteSubviewSizes: [CGSize] = subviews.compactMap {
-            let size = $0.sizeThatFits(.infinity)
-            if size.width == .infinity || size.height == .infinity {
+            let maxSize = $0.sizeThatFits(.infinity)
+            if maxSize.width == .infinity || maxSize.height == .infinity {
                 return nil
             } else {
-                return size
+                return maxSize
             }
         }
         if finiteSubviewSizes.isEmpty {
@@ -55,38 +64,53 @@ struct AutoGrid: Layout {
         }
     }
     
-    private func proposedGridAndSize(proposal: ProposedViewSize, subviews: Subviews, avgSubviewSize: CGSize) -> (rows: Int, columns: Int, size: CGSize) {
-        var bestGrid = (1, subviews.count)
+    private func proposedGridAndSize(proposal: ProposedViewSize, subviews: Subviews, avgSubviewSize: CGSize) -> (coord: GridCoordinate, size: CGSize) {
+        var bestGrid = GridCoordinate(row: 1, column: subviews.count)
         var bestGridScore: CGFloat = .infinity
         
         for grid in gridDimensions(of: subviews.count) {
-            let thisSize = CGSize(width: avgSubviewSize.width * CGFloat(grid.0), height: avgSubviewSize.height * CGFloat(grid.1))
+            let thisSize = CGSize(width: avgSubviewSize.width * CGFloat(grid.row), height: avgSubviewSize.height * CGFloat(grid.column))
             let thisScore = aspectRatioDifference(thisSize, proposal.aspectRatio)
             if thisScore < bestGridScore {
-                bestGrid = (grid.0, grid.1)
+                bestGrid = grid
                 bestGridScore = thisScore
             }
         }
         
-        let size = CGSize(
-            width: CGFloat(bestGrid.1) * avgSubviewSize.width + CGFloat(bestGrid.1 - 1) * spacing,
-            height: CGFloat(bestGrid.0) * avgSubviewSize.height + CGFloat(bestGrid.0 - 1) * spacing)
-        return (bestGrid.0, bestGrid.1, size)
+        let width = CGFloat(bestGrid.column) * avgSubviewSize.width + CGFloat(bestGrid.column - 1) * spacing
+        let height = CGFloat(bestGrid.row) * avgSubviewSize.height + CGFloat(bestGrid.row - 1) * spacing
+        return (bestGrid, CGSize(width: width, height: height))
     }
     
-    private func gridIndex(subviewIndex: Int, rows: Int, columns: Int) -> (row: Int, column: Int) {
-        (subviewIndex / columns, subviewIndex % columns)
+    private func minSize(_ size: CGSize, proposal: ProposedViewSize) -> CGSize {
+        let width: CGFloat = {
+            if let propWidth = proposal.width {
+                return min(size.width, propWidth)
+            }
+            return size.width
+        }()
+        let height: CGFloat = {
+            if let propHeight = proposal.height {
+                return min(size.height, propHeight)
+            }
+            return size.height
+        }()
+        return CGSize(width: width, height: height)
     }
     
-    private func gridDimensions(of n: Int) -> [(Int, Int)] {
+    private func gridIndex(subviewIndex: Int, totalColumns: Int) -> GridCoordinate {
+        GridCoordinate(row: subviewIndex / totalColumns, column: subviewIndex % totalColumns)
+    }
+    
+    private func gridDimensions(of n: Int) -> [GridCoordinate] {
         precondition(n > 0, "n must be positive")
         let sqrtn = Int(Double(n).squareRoot())
-        var factors: [(Int, Int)] = []
+        var factors: [GridCoordinate] = []
         for i in 1...sqrtn {
             if n % i == 0 {
-                factors.append((i, n/i))
+                factors.append(GridCoordinate(row: i, column: n/i))
                 if i != n/i {
-                    factors.append((n/i, i))
+                    factors.append(GridCoordinate(row: n/i, column: i))
                 }
             }
         }

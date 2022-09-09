@@ -10,7 +10,8 @@ import SwiftUI
 
 struct SeedView: View {
     
-    @Environment(\.shapeDirection) var shapeDirection: ShapeDirection
+    @Environment(\.safeCornerOffsets) private var safeCornerOffsets
+    @Environment(\.shapeDirection) private var shapeDirection: ShapeDirection
     
     var isLocked: Bool {
         !peerSessionController.mcSession.connectedPeers.isEmpty && !PeerSessionController.shared.isHost
@@ -92,10 +93,15 @@ struct SeedView: View {
                     Image(systemName: "rectangle.fill")
                 }).buttonStyle(GroupedButtonStyle(segmentPosition: .middle, width: system.flexButtonFrameHeight, isSelected: self.screenShapeCaseOverride == .rectangle))
                 Button(action: {
-                    self.screenShapeCaseOverride = .hexagon
+                    self.screenShapeCaseOverride = .verticalHexagon
                 }, label: {
                     Image(systemName: "hexagon.fill")
-                }).buttonStyle(GroupedButtonStyle(segmentPosition: .middle, width: system.flexButtonFrameHeight, isSelected: self.screenShapeCaseOverride == .hexagon))
+                }).buttonStyle(GroupedButtonStyle(segmentPosition: .middle, width: system.flexButtonFrameHeight, isSelected: self.screenShapeCaseOverride == .verticalHexagon))
+                Button(action: {
+                    self.screenShapeCaseOverride = .horizontalHexagon
+                }, label: {
+                    Image(systemName: "hexagon.fill")
+                }).buttonStyle(GroupedButtonStyle(segmentPosition: .middle, width: system.flexButtonFrameHeight, isSelected: self.screenShapeCaseOverride == .horizontalHexagon))
                 Button(action: {
                     self.screenShapeCaseOverride = .trapezoid
                 }, label: {
@@ -132,7 +138,7 @@ struct SeedView: View {
             NavigationButton(to: .lockScreen) {
                 Image(systemName: "xmark")
             }
-            .offset(system.safeCornerOffsets.topTrailing)
+            .offset(safeCornerOffsets.topTrailing)
         }
         .font(Font.system(size: 18, weight: .semibold, design: .rounded))
     }

@@ -35,34 +35,38 @@ struct PlanetView: View {
         AutoStack {
             GeometryReader { geometry in
                 VStack {
-                    if 300 < min(geometry.size.width, geometry.size.height) {
-                        AutoStack {
-                            Text("\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))")
-                                .multilineTextAlignment(.leading)
-                                .animation(.none)
-                            Spacer()
-                            VStack {
-                                BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
-                                BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
+                    ViewThatFits {
+                        VStack {
+                            AutoStack {
+                                Text("\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))")
+                                    .multilineTextAlignment(.leading)
+                                    .animation(.none)
+                                Spacer()
+                                VStack {
+                                    BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
+                                    BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
+                                }
                             }
+                            Spacer()
                         }
-                        Spacer()
+                        EmptyView()
                     }
                     AutoGrid(spacing: 16) {
                         ForEach(0..<(300 < min(geometry.size.width, geometry.size.height) ? 4 : 2)) { index in
-                            ZStack {
-                                CircularProgressView(value: {
-                                    switch index {
-                                    case 0:
-                                        return self.$progress5
-                                    case 1:
-                                        return self.$progress6
-                                    case 2:
-                                        return self.$progress7
-                                    default:
-                                        return self.$progress8
-                                    }
-                                }())
+                            CircularProgressView(value: {
+                                switch index {
+                                case 0:
+                                    return self.$progress5
+                                case 1:
+                                    return self.$progress6
+                                case 2:
+                                    return self.$progress7
+                                default:
+                                    return self.$progress8
+                                }
+                            }())
+                            .frame(minWidth: 56, idealWidth: 100, minHeight: 56, idealHeight: 100)
+                            .overlay {
                                 Text(Lorem.word(random: self.random))
                                     .animation(.none)
                             }
@@ -121,23 +125,25 @@ struct PlanetView: View {
                                 .offset(x: CGFloat(self.points[i].x * min(geometry.size.width, geometry.size.height/2)), y: CGFloat(self.points[i].y * min(geometry.size.width, geometry.size.height/2)))
                             }
                         }
-                            .frame(width: min(geometry.size.width, geometry.size.height/2), height: min(geometry.size.width, geometry.size.height/2), alignment: .center)
+                        .frame(width: min(geometry.size.width, geometry.size.height/2), height: min(geometry.size.width, geometry.size.height/2), alignment: .center)
                     }
                     .frame(minHeight: geometry.size.height/2)
                     .position(x: geometry.size.width/2, y: geometry.size.height/2)
                 }
-                AutoGrid(spacing: 16) {
+                HStack(spacing: system.basicShape == .triangle ? -8 : 16) {
                     NavigationButton(to: .nearby) {
                         Text("Nearby")
                     }
                     NavigationButton(to: .targeting) {
                         Text("Targeting")
                     }
+                    .environment(\.shapeDirection, .down)
                     NavigationButton(to: .galaxy) {
                         Text("Galaxy")
                     }
                 }
             }
+            .padding(.vertical, system.screenShapeCase == .verticalHexagon ? -100 : 0)
             GeometryReader { geometry in
                 VStack {
                     AutoStack {
@@ -153,19 +159,20 @@ struct PlanetView: View {
                     Spacer()
                     AutoGrid(spacing: 16) {
                         ForEach(0..<(300 < min(geometry.size.width, geometry.size.height) ? 4 : 2)) { index in
-                            ZStack {
-                                CircularProgressView(value: {
-                                    switch index {
-                                    case 0:
-                                        return self.$progress5
-                                    case 1:
-                                        return self.$progress6
-                                    case 2:
-                                        return self.$progress7
-                                    default:
-                                        return self.$progress8
-                                    }
-                                }())
+                            CircularProgressView(value: {
+                                switch index {
+                                case 0:
+                                    return self.$progress5
+                                case 1:
+                                    return self.$progress6
+                                case 2:
+                                    return self.$progress7
+                                default:
+                                    return self.$progress8
+                                }
+                            }())
+                            .frame(minWidth: 56, idealWidth: 100, minHeight: 56, idealHeight: 100)
+                            .overlay {
                                 Text(Lorem.word(random: self.random))
                                     .animation(.none)
                             }

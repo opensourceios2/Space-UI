@@ -11,22 +11,6 @@ import SwiftUI
 extension Color {
     
     init(color: SystemColor, opacity: Opacity) {
-        let hue: CGFloat
-        let saturation: CGFloat
-        switch color {
-        case .primary:
-            hue = system.primaryHue
-            saturation = system.primarySaturation
-        case .secondary:
-            hue = system.secondaryHue
-            saturation = system.secondarySaturation
-        case .tertiary:
-            hue = system.tertiaryHue
-            saturation = system.tertiarySaturation
-        case .danger:
-            hue = system.dangerHue
-            saturation = system.dangerSaturation
-        }
         let opacityMultiplier: CGFloat = {
             switch opacity {
             case .min:
@@ -42,7 +26,28 @@ extension Color {
             }
         }()
         let actualOpacity = system.screenMinBrightness + (opacityMultiplier * (1.0 - system.screenMinBrightness))
-        self.init(displayP3Hue: hue, saturation: saturation, brightness: 1.0, opacity: CGFloat(actualOpacity))
+        self.init(color: color, opacity: CGFloat(actualOpacity))
+    }
+    
+    /// Avoid using this
+    init(color: SystemColor, opacity: CGFloat) {
+        let hue: CGFloat
+        let saturation: CGFloat
+        switch color {
+        case .primary:
+            hue = system.colors.primaryHue
+            saturation = system.colors.primarySaturation
+        case .secondary:
+            hue = system.colors.secondaryHue
+            saturation = system.colors.secondarySaturation
+        case .tertiary:
+            hue = system.colors.tertiaryHue
+            saturation = system.colors.tertiarySaturation
+        case .danger:
+            hue = system.colors.dangerHue
+            saturation = system.colors.dangerSaturation
+        }
+        self.init(displayP3Hue: hue, saturation: saturation, brightness: 1.0, opacity: opacity)
     }
     
     init(color: SystemColor, brightness: Opacity) {
@@ -50,17 +55,17 @@ extension Color {
         let saturation: CGFloat
         switch color {
         case .primary:
-            hue = system.primaryHue
-            saturation = system.primarySaturation
+            hue = system.colors.primaryHue
+            saturation = system.colors.primarySaturation
         case .secondary:
-            hue = system.secondaryHue
-            saturation = system.secondarySaturation
+            hue = system.colors.secondaryHue
+            saturation = system.colors.secondarySaturation
         case .tertiary:
-            hue = system.tertiaryHue
-            saturation = system.tertiarySaturation
+            hue = system.colors.tertiaryHue
+            saturation = system.colors.tertiarySaturation
         case .danger:
-            hue = system.dangerHue
-            saturation = system.dangerSaturation
+            hue = system.colors.dangerHue
+            saturation = system.colors.dangerSaturation
         }
         let brightnessMultiplier: CGFloat = {
             switch brightness {
@@ -89,15 +94,4 @@ extension Color {
         self.init(.displayP3, red: Double(red), green: Double(green), blue: Double(blue), opacity: Double(opacity))
     }
     
-}
-
-extension UIColor {
-    convenience init(displayP3Hue hue: CGFloat, saturation: CGFloat, brightness: CGFloat, opacity: CGFloat) {
-        let standardRGB = UIColor(hue: hue, saturation: saturation, brightness: brightness, alpha: opacity)
-        var red: CGFloat = 0.0
-        var green: CGFloat = 0.0
-        var blue: CGFloat = 0.0
-        standardRGB.getRed(&red, green: &green, blue: &blue, alpha: nil)
-        self.init(displayP3Red: red, green: green, blue: blue, alpha: opacity)
-    }
 }

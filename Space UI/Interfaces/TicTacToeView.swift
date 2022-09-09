@@ -56,18 +56,18 @@ struct TicTacToeView: View {
             ZStack {
                 GridShape(rows: 3, columns: 3, outsideCornerRadius: system.cornerRadius(forLength: 100))
                     .stroke(Color(color: .primary, opacity: .max), lineWidth: 2)
-                VStack(spacing: 0) {
-                    HStack(spacing: 0) {
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
                         makeButton(coord: CellCoord(row: 0, column: 0))
                         makeButton(coord: CellCoord(row: 0, column: 1))
                         makeButton(coord: CellCoord(row: 0, column: 2))
                     }
-                    HStack(spacing: 0) {
+                    GridRow {
                         makeButton(coord: CellCoord(row: 1, column: 0))
                         makeButton(coord: CellCoord(row: 1, column: 1))
                         makeButton(coord: CellCoord(row: 1, column: 2))
                     }
-                    HStack(spacing: 0) {
+                    GridRow {
                         makeButton(coord: CellCoord(row: 2, column: 0))
                         makeButton(coord: CellCoord(row: 2, column: 1))
                         makeButton(coord: CellCoord(row: 2, column: 2))

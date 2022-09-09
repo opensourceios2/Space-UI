@@ -12,7 +12,6 @@ import CoreImage.CIFilterBuiltins // Import required for tvOS
 struct ScreenView<Content: View>: View {
     
     let content: Content
-    let lineWidth: CGFloat = system.prefersBorders ? CGFloat(Int.random(in: 2...6))*2.0 : 0.0
     
     let maxMaskOffset: CGFloat = 100.0
     let maskLines: Image? = {
@@ -32,28 +31,29 @@ struct ScreenView<Content: View>: View {
         return nil
     }()
     
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+    @Environment(\.accessibilityReduceMotion) private var reducedMotion
+    
     @State var maskOffset: CGSize = CGSize(width: 100.0 / 2.0, height: 100.0 / 2.0)
     
     var body: some View {
-        let dash = system.lineDash(lineWidth: lineWidth)
-        
-        return GeometryReader { geometry in
+        GeometryReader { geometry in
             self.content
                 .padding(system.mainContentInsets(screenSize: geometry.size))
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .background(
                     LinearGradient(gradient: Gradient(colors: system.backgroundStyle == .color ? [Color(color: .primary, opacity: .min)] : (system.backgroundStyle == .gradientDown ? [
-                        Color(displayP3Hue: system.primaryHue, saturation: system.primarySaturation, brightness: 1.0, opacity: system.screenMinBrightness+0.05),
-                        Color(displayP3Hue: system.primaryHue, saturation: system.primarySaturation, brightness: 1.0, opacity: max(0, system.screenMinBrightness-0.05))
+                        Color(color: .primary, opacity: system.screenMinBrightness+0.05),
+                        Color(color: .primary, opacity: max(0, system.screenMinBrightness-0.05))
                         ] : [
-                            Color(displayP3Hue: system.primaryHue, saturation: system.primarySaturation, brightness: 1.0, opacity: max(0, system.screenMinBrightness-0.05)),
-                            Color(displayP3Hue: system.primaryHue, saturation: system.primarySaturation, brightness: 1.0, opacity: system.screenMinBrightness+0.05)
+                            Color(color: .primary, opacity: max(0, system.screenMinBrightness-0.05)),
+                            Color(color: .primary, opacity: system.screenMinBrightness+0.05)
                         ])), startPoint: .top, endPoint: .bottom)
                 )
                 .clipShape(ScreenShape())
                 .overlay(
                     ScreenShape()
-                        .strokeBorder(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: self.lineWidth, lineCap: system.lineCap, dash: dash))
+                        .strokeBorder(Color(color: .primary, opacity: .max), style: system.screenStrokeStyle)
                         .padding(system.borderInsetAmount)
                 )
                 .mask(ZStack {
@@ -67,7 +67,7 @@ struct ScreenView<Content: View>: View {
                     }
                 })
                 .overlay(
-                    system.topCutoutStyle(screenSize: geometry.size, availableWidth: 999, insetAmount: 0) == .none || UIScreen.main.traitCollection.horizontalSizeClass == .compact ? nil : DecorativeStatusView(data: ShipData.shared.topStatusState)
+                    system.topCutoutStyle(screenSize: geometry.size, availableWidth: 999, insetAmount: 0) == .none || hSizeClass == .compact ? nil : DecorativeStatusView(data: ShipData.shared.topStatusState)
                         .frame(width: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: true).size.width, height: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: true).size.height)
                         .offset(x: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: true).origin.x, y: 0)
                 , alignment: .top)
@@ -78,7 +78,8 @@ struct ScreenView<Content: View>: View {
                 , alignment: .bottom)
                 .position(x: geometry.size.width/2, y: geometry.size.height/2)
                 .onAppear() {
-                    guard system.screenFilter == .hLines || system.screenFilter == .vLines, !UIAccessibility.isReduceMotionEnabled else { return }
+                    guard system.screenFilter == .hLines || system.screenFilter == .vLines, !reducedMotion else { return }
+                    
                     maskOffset = CGSize(width: maxMaskOffset / 2.0, height: maxMaskOffset / 2.0)
                     if system.screenFilter == .hLines {
                         withAnimation(Animation.linear(duration: 10).repeatForever(autoreverses: false)) {
@@ -90,6 +91,7 @@ struct ScreenView<Content: View>: View {
                         }
                     }
                 }
+                .environment(\.safeCornerOffsets, system.safeCornerOffsets(screenSize: geometry.size))
         }
     }
     
