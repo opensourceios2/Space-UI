@@ -31,7 +31,14 @@ struct ScreenView<Content: View>: View {
         return nil
     }()
     
+    #if os(iOS)
     @Environment(\.horizontalSizeClass) private var hSizeClass
+    var regularHSizeClass: Bool {
+        hSizeClass == .regular
+    }
+    #else
+    let regularHSizeClass = true
+    #endif
     @Environment(\.accessibilityReduceMotion) private var reducedMotion
     
     @State var maskOffset: CGSize = CGSize(width: 100.0 / 2.0, height: 100.0 / 2.0)
@@ -41,43 +48,51 @@ struct ScreenView<Content: View>: View {
             self.content
                 .padding(system.mainContentInsets(screenSize: geometry.size))
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
-                .background(
+                .background {
                     LinearGradient(gradient: Gradient(colors: system.backgroundStyle == .color ? [Color(color: .primary, opacity: .min)] : (system.backgroundStyle == .gradientDown ? [
                         Color(color: .primary, opacity: system.screenMinBrightness+0.05),
                         Color(color: .primary, opacity: max(0, system.screenMinBrightness-0.05))
-                        ] : [
-                            Color(color: .primary, opacity: max(0, system.screenMinBrightness-0.05)),
-                            Color(color: .primary, opacity: system.screenMinBrightness+0.05)
-                        ])), startPoint: .top, endPoint: .bottom)
-                )
-                .clipShape(ScreenShape())
-                .overlay(
-                    ScreenShape()
-                        .strokeBorder(Color(color: .primary, opacity: .max), style: system.screenStrokeStyle)
-                        .padding(system.borderInsetAmount)
-                )
-                .mask(ZStack {
-                    if let maskLines = maskLines {
-                        maskLines
-                            .resizable(resizingMode: .tile)
-                            .frame(width: geometry.size.width + maxMaskOffset, height: geometry.size.height + maxMaskOffset)
-                            .offset(maskOffset)
-                    } else {
-                        Color.black
+                    ] : [
+                        Color(color: .primary, opacity: max(0, system.screenMinBrightness-0.05)),
+                        Color(color: .primary, opacity: system.screenMinBrightness+0.05)
+                    ])), startPoint: .top, endPoint: .bottom)
+                }
+                .clipShape(ScreenShape(screenShapeCase: system.actualScreenShapeCase(screenSize: geometry.size)))
+                .overlay {
+                    if let style = system.screenStrokeStyle {
+                        ScreenShape(screenShapeCase: system.actualScreenShapeCase(screenSize: geometry.size))
+                            .strokeBorder(Color(color: .primary, opacity: .max), style: style)
+                            .padding(system.borderInsetAmount)
                     }
-                })
-                .overlay(
-                    system.topCutoutStyle(screenSize: geometry.size, availableWidth: 999, insetAmount: 0) == .none || hSizeClass == .compact ? nil : DecorativeStatusView(data: ShipData.shared.topStatusState)
-                        .frame(width: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: true).size.width, height: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: true).size.height)
-                        .offset(x: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: true).origin.x, y: 0)
-                , alignment: .top)
-                .overlay(
-                    system.bottomCutoutStyle(screenSize: geometry.size, availableWidth: 999, insetAmount: 0) == .none ? nil : DecorativeStatusView(data: ShipData.shared.bottomStatusState)
-                        .frame(width: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: false).size.width, height: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: false).size.height)
-                        .offset(x: system.cutoutFrame(screenRect: CGRect(origin: .zero, size: geometry.size), forTop: false).origin.x, y: 0)
-                , alignment: .bottom)
+                }
+                .mask {
+                    ZStack {
+                        if let maskLines = maskLines {
+                            maskLines
+                                .resizable(resizingMode: .tile)
+                                .frame(width: geometry.size.width + maxMaskOffset, height: geometry.size.height + maxMaskOffset)
+                                .offset(maskOffset)
+                        } else {
+                            Color.black
+                        }
+                    }
+                }
+                .overlay(alignment: .top) {
+                    if let cutoutFrame = system.cutoutFrame(screenSize: geometry.size, forTop: true), regularHSizeClass {
+                        DecorativeStatusView(data: ShipData.shared.topStatusState)
+                            .frame(width: cutoutFrame.size.width, height: cutoutFrame.size.height)
+                            .offset(x: cutoutFrame.origin.x, y: 0)
+                    }
+                }
+                .overlay(alignment: .bottom) {
+                    if let cutoutFrame = system.cutoutFrame(screenSize: geometry.size, forTop: false) {
+                        DecorativeStatusView(data: ShipData.shared.bottomStatusState)
+                            .frame(width: cutoutFrame.size.width, height: cutoutFrame.size.height)
+                            .offset(x: cutoutFrame.origin.x, y: 0)
+                    }
+                }
                 .position(x: geometry.size.width/2, y: geometry.size.height/2)
-                .onAppear() {
+                .onAppear {
                     guard system.screenFilter == .hLines || system.screenFilter == .vLines, !reducedMotion else { return }
                     
                     maskOffset = CGSize(width: maxMaskOffset / 2.0, height: maxMaskOffset / 2.0)

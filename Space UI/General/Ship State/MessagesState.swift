@@ -15,8 +15,22 @@ struct MessageContent: Identifiable {
         case regular, secondaryColor, tertiaryColor, filledBackground, filledBackgroundWithSecondaryTextColor, flashing, tagged1, tagged2
     }
     
-    static func random() -> MessageContent {
-        MessageContent(sender: Lorem.word(), body: Lorem.words(Int.random(in: 2...3)).uppercased(), style: {
+    let sender: String
+    let body: String
+    let style: Style
+    
+    var id: UUID { UUID() }
+    
+    init(sender: String, body: String, style: Style) {
+        self.sender = sender
+        self.body = body
+        self.style = style
+    }
+    
+    init(index: Int) {
+        sender = Lorem.word(index: index)
+        body = Lorem.words(index: index, count: Int.random(in: 2...3)).uppercased()
+        style = {
             switch Int.random(in: 0...44) {
             case 0, 1:
                 return .secondaryColor
@@ -33,25 +47,15 @@ struct MessageContent: Identifiable {
             default:
                 return .regular
             }
-        }())
+        }()
     }
-    
-    let sender: String
-    let body: String
-    let style: Style
-    
-    var id: UUID { UUID() }
     
 }
 
 final class MessagesState: ObservableObject {
     
     @Published private var internalMessages: [MessageContent] = {
-        var messages = [MessageContent]()
-        for _ in 0..<60 {
-            messages.append(MessageContent.random())
-        }
-        return messages
+        (0..<60).map({ MessageContent(index: $0) })
     }()
     var messages: [MessageContent] {
         internalMessages

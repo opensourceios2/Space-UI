@@ -10,9 +10,9 @@ import SwiftUI
 
 struct AlmostThereNumberText: View {
     
-    let number: Int
+    @Binding var number: Int
     let digitCount: Int
-    let fontSize: CGFloat = system.defaultFontSize * 1.6
+    let fontSize: CGFloat = system.defaultFontSize * 2
     
     var body: some View {
         ZStack(alignment: .trailing) {
@@ -29,6 +29,6 @@ struct AlmostThereNumberText: View {
 
 struct AlmostThereNumberText_Previews: PreviewProvider {
     static var previews: some View {
-        AlmostThereNumberText(number: 12345, digitCount: 5)
+        AlmostThereNumberText(number: .constant(12345), digitCount: 5)
     }
 }

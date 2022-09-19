@@ -21,17 +21,17 @@ struct SinglePlanetView: View {
     var body: some View {
         Sphere(vertical: 4, horizontal: 3)
             .trim(from: 0.0, to: self.sphereAnimationProgress)
-            .stroke(Color(color: self.planetColor(), opacity: .max), lineWidth: 2)
+            .stroke(Color(color: self.planetColor(), opacity: .max), lineWidth: system.thinLineWidth)
             .frame(width: self.planet.diameter)
             .overlay( self.planet.hasRing ?
                 Ellipse()
-                    .stroke(Color(color: self.planetColor(), opacity: .max), lineWidth: 2)
+                    .stroke(Color(color: self.planetColor(), opacity: .max), lineWidth: system.thinLineWidth)
                     .frame(width: self.planet.diameter * 1.6, height: self.planet.diameter * 0.5)
                 : nil
             )
             .overlay( planet.id == selectedID && shapeOverlayOnSelection ?
                 AutoShape(direction: shapeDirection)
-                    .stroke(Color(color: .secondary, opacity: .max), lineWidth: 2)
+                    .stroke(Color(color: .secondary, opacity: .max), lineWidth: system.thinLineWidth)
                     .frame(width: self.planet.diameter * 2, height: self.planet.diameter * 2)
                 : nil
             )

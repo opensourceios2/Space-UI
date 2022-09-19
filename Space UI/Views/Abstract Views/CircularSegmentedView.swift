@@ -135,7 +135,7 @@ struct CircularSegmentedView: View {
                         .foregroundColor(value.fillAndBorder.fill)
                         .overlay( value.fillAndBorder.border == nil ? nil :
                             AngularSegment(angle: segmentAngle(size: geometry.size), topIsCurved: curvedOuterEdge, cornerRadius: segmentCornerRadius(size: geometry.size))
-                            .strokeBorder(value.fillAndBorder.border!, lineWidth: 2.0)
+                            .strokeBorder(value.fillAndBorder.border!, lineWidth: system.thinLineWidth)
                         )
                         .offset(x: 0.0, y: -spacing / 2.0)
                         .rotationEffect(CircularStack.subviewRotationAngles(stepCount: values.count)[value.id])
@@ -143,6 +143,7 @@ struct CircularSegmentedView: View {
             }
         }
         .aspectRatio(1, contentMode: .fit)
+        .padding(spacing / 2)
     }
     
     init() {

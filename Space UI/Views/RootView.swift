@@ -16,13 +16,15 @@ struct RootView: View {
     
     let isExternal: Bool
     
+    @Environment(\.verticalSizeClass) private var vSizeClass
+    
     @State var interface: Interface
     @State var showingDebugControls = true
     @ObservedObject var systemAppearance: SystemAppearance
     
     var body: some View {
         VStack {
-            if let segs = system.topMorseCodeSegments {
+            if vSizeClass == .regular, let segs = system.topMorseCodeSegments {
                 MorseCodeLine(segments: segs)
                     .padding(.horizontal, 20)
             }
@@ -62,7 +64,7 @@ struct RootView: View {
                     UnlabeledKeypadView()
                 }
             }
-            if let segs = system.bottomMorseCodeSegments {
+            if vSizeClass == .regular, let segs = system.bottomMorseCodeSegments {
                 MorseCodeLine(segments: segs)
                     .padding(.horizontal, 20)
             }

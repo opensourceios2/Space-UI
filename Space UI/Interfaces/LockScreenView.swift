@@ -65,8 +65,9 @@ struct LockScreenView: View {
                 }
                 Spacer()
                 HStack {
-                    ForEach(0..<self.random.nextInt(in: 3...5)) { _ in
-                        Image(CircleIcon.randomName(random: self.random)).foregroundColor(Color(color: .primary, opacity: .high))
+                    ForEach(0..<self.random.nextInt(in: 3...5)) { index in
+                        CircleIcon.image(index: index)
+                            .foregroundColor(Color(color: .primary, opacity: .high))
                     }
                 }
             }
@@ -78,33 +79,35 @@ struct LockScreenView: View {
                     Text("Computer")
                 }
             }
-            .background(
-                brandNamePosition == .topCorner ? nil :
-                ZStack {
-                    CircularText(string: shipName, radius: 150, onTopEdge: true)
-                        .foregroundColor(Color(color: .primary, opacity: .max))
-                    CircularText(string: shipManufacturer, radius: 150, onTopEdge: false)
-                        .foregroundColor(Color(color: .primary, opacity: .medium))
+            .background {
+                if brandNamePosition != .topCorner {
+                    ZStack {
+                        CircularText(string: shipName, radius: 150, onTopEdge: true)
+                            .foregroundColor(Color(color: .primary, opacity: .max))
+                        CircularText(string: shipManufacturer, radius: 150, onTopEdge: false)
+                            .foregroundColor(Color(color: .primary, opacity: .medium))
+                    }
                 }
-            )
+            }
         }
-        .overlay( hasCircularSegmentedView ?
-            RandomWidget(random: random)
-                .frame(width: 100, height: 100)
-                .offset(safeCornerOffsets.bottomLeading)
-            : nil
-        , alignment: .bottomLeading)
-        .overlay(
+        .overlay(alignment: .bottomLeading) {
+            if hasCircularSegmentedView {
+                RandomWidget(random: random)
+                    .frame(maxWidth: 100, maxHeight: 100, alignment: .bottomLeading)
+                    .offset(safeCornerOffsets.bottomLeading)
+            }
+        }
+        .overlay(alignment: .bottomTrailing) {
             HStack {
-                ForEach(0..<self.random.nextInt(in: 0...2)) { _ in
-                    Image(LargeIcon.randomName(random: self.random))
+                ForEach(0..<self.random.nextInt(in: 0...2)) { index in
+                    LargeIcon.image(index: index)
                         .foregroundColor(Color(color: .primary, opacity: .max))
                         .shadow(color: self.notificationShadowColor, radius: 10, x: 0, y: 0)
                         .opacity(self.notificationOpacity)
                 }
             }
             .offset(safeCornerOffsets.bottomTrailing)
-        , alignment: .bottomTrailing)
+        }
         .onAppear {
             withAnimation(Animation.easeInOut(duration: 0.75).repeatForever(autoreverses: true)) {
                 self.notificationShadowColor = .clear

@@ -18,10 +18,16 @@ extension UserDefaults {
         static let showAlbumArtwork = "showAlbumArtwork"
         static let randomEmergencies = "randomEmergencies"
         static let seed = "seed"
+        static let displayOrientation = "displayOrientation"
         static let screenShapeCaseOverride = "screenShapeCaseOverride"
         static let tutorialShown = "tutorialShown"
         static let canHostSession = "canHostSession"
         static let canJoinSession = "canJoinSession"
+        
+        static let externalDisplayOnLeft = "externalDisplayOnLeft"
+        static let externalDisplayOnRight = "externalDisplayOnRight"
+        static let externalDisplayOnTop = "externalDisplayOnTop"
+        static let externalDisplayOnBottom = "externalDisplayOnBottom"
     }
     
     func register() {
@@ -31,9 +37,15 @@ extension UserDefaults {
             Key.keepAwake: false,
             Key.showAlbumArtwork: true,
             Key.randomEmergencies: true,
+            Key.displayOrientation: "default",
             Key.tutorialShown: false,
             Key.canHostSession: true,
-            Key.canJoinSession: true
+            Key.canJoinSession: true,
+            
+            Key.externalDisplayOnLeft: false,
+            Key.externalDisplayOnRight: false,
+            Key.externalDisplayOnTop: false,
+            Key.externalDisplayOnBottom: false
         ])
         
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String

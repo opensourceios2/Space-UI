@@ -49,7 +49,7 @@ struct SeedView: View {
     @Namespace var mainNamespace
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             Form {
                 Section {
                     TextField("Seed", text: self.$seedCopy, onCommit: {
@@ -77,20 +77,23 @@ struct SeedView: View {
                     }
                 })) {
                     ForEach(allScreenShapeCases) { shapeCase in
-                        Image(systemName: {
+                        Group {
                             switch shapeCase {
                             case .rectangle:
-                                return "rectangle.fill"
-                            case .verticalHexagon, .horizontalHexagon:
-                                return "hexagon.fill"
+                                Image(systemName: "rectangle.fill")
+                            case .verticalHexagon:
+                                Image(systemName: "hexagon.fill")
+                            case .horizontalHexagon:
+                                Image(systemName: "hexagon.fill")
+                                    .rotationEffect(.degrees(90))
                             case .trapezoid:
-                                return "triangle.fill"
+                                Image(systemName: "triangle.fill")
                             case .capsule:
-                                return "capsule.fill"
+                                Image(systemName: "capsule.fill")
                             default:
-                                return "questionmark.circle"
+                                Image(systemName: "questionmark.circle")
                             }
-                        }())
+                        }
                             .tag(shapeCase)
                     }
                 }

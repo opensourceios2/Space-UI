@@ -29,7 +29,10 @@ struct ComsView: View {
                         ComsMessageView(messageContent: message)
                     }
                 }
+                .padding(.vertical, 100)
             }
+            .padding(.vertical, -100)
+            .fadeScrollEdges(length: 100)
             .frame(width: 375)
             KeyboardView()
         }

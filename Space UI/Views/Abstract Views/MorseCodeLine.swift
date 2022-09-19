@@ -39,7 +39,7 @@ struct MorseCodeLine: View {
                             .overlay(
                                 system.prefersBorders ?
                                     RoundedRectangle(cornerRadius: system.cornerRadius(forLength: height))
-                                        .strokeBorder(color, lineWidth: 2)
+                                        .strokeBorder(color, lineWidth: system.thinLineWidth)
                                         .frame(width: segment.length, height: height)
                                 : nil
                             )

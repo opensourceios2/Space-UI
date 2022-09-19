@@ -64,7 +64,7 @@ struct GroupedButtonStyle: ButtonStyle {
             .overlay(
                 system.prefersButtonBorders ?
                     GroupedButtonShape(segmentPosition: segmentPosition)
-                    .strokeBorder(Color(color: self.isSelected ? .tertiary : .primary, opacity: .max), lineWidth: 2)
+                    .strokeBorder(Color(color: self.isSelected ? .tertiary : .primary, opacity: .max), lineWidth: system.thinLineWidth)
                 : nil
             )
             .opacity(configuration.isPressed ? 0.5 : 1.0)

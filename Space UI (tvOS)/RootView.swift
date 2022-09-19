@@ -16,6 +16,26 @@ enum Interface {
 
 struct RootView: View {
     
+    private enum DisplayOrientation: String {
+        case `default`, left, right
+        
+        var angle: Angle {
+            switch self {
+            case .left:
+                return .degrees(90)
+            case .right:
+                return .degrees(-90)
+            default:
+                return .zero
+            }
+        }
+    }
+    
+    @AppStorage(UserDefaults.Key.displayOrientation) private var displayOrientationRawValue = "default"
+    private var displayOrientation: DisplayOrientation {
+        DisplayOrientation(rawValue: displayOrientationRawValue) ?? .default
+    }
+    
     @State var interface: Interface
     @State var showSeedView = false
     @ObservedObject var systemAppearance: SystemAppearance
@@ -28,6 +48,8 @@ struct RootView: View {
             SeedView()
         }
         .ignoresSafeArea()
+        .frame(width: displayOrientation == .default ? 1920 : 1080, height: displayOrientation == .default ? 1080 : 1920)
+        .rotationEffect(displayOrientation.angle)
         .font(Font.spaceFont(size: system.defaultFontSize))
         .foregroundColor(Color(color: .secondary, opacity: .max))
         .environmentObject(system)

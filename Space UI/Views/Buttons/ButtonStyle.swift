@@ -27,7 +27,7 @@ struct FlexButtonStyle: ButtonStyle {
             .overlay(
                 system.prefersButtonBorders ?
                 RoundedRectangle(cornerRadius: system.cornerRadius(forLength: system.flexButtonFrameHeight))
-                    .strokeBorder(Color(color: self.isSelected ? .tertiary : .primary, brightness: self.isDisabled ? .medium : .max), lineWidth: 2)
+                    .strokeBorder(Color(color: self.isSelected ? .tertiary : .primary, brightness: self.isDisabled ? .medium : .max), lineWidth: system.mediumLineWidth)
                 : nil
             )
             .opacity(configuration.isPressed ? 0.5 : 1.0)
@@ -55,22 +55,22 @@ struct ShapeButtonStyle: ButtonStyle {
             .overlay(
                 system.prefersButtonBorders ?
                 AutoShape(direction: shapeDirection)
-                    .strokeBorder(Color(color: self.isSelected ? .tertiary : .primary, brightness: self.isDisabled ? .medium : .max), lineWidth: 2)
+                    .strokeBorder(Color(color: self.isSelected ? .tertiary : .primary, brightness: self.isDisabled ? .medium : .max), lineWidth: system.mediumLineWidth)
                 : nil
             )
             .opacity(configuration.isPressed ? 0.5 : 1.0)
     }
     
-    func buttonTextPadding() -> CGFloat {
+    func buttonTextPadding() -> EdgeInsets {
         switch system.basicShape {
         case .triangle:
-            return 22
+            return EdgeInsets(top: shapeDirection == .up ? 26 : 18, leading: 22, bottom: shapeDirection == .up ? 18 : 26, trailing: 22)
         case .trapezoid:
-            return 18
+            return EdgeInsets(top: 18, leading: 18, bottom: 18, trailing: 18)
         case .diamond:
-            return 14
+            return EdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 14)
         default:
-            return 12
+            return EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
         }
     }
     

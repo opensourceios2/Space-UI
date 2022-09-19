@@ -20,70 +20,73 @@ struct PlanetView: View {
     let points: [CGPoint]
     let planetAngle: Double
     
+    @Environment(\.verticalSizeClass) private var vSizeClass
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+    
     @State var sphereAnimationProgress: CGFloat = 0.0
     
-    @State var progress1: CGFloat = 0.0
-    @State var progress2: CGFloat = 0.0
-    @State var progress3: CGFloat = 0.0
-    @State var progress4: CGFloat = 0.0
-    @State var progress5: CGFloat = 0.0
-    @State var progress6: CGFloat = 0.0
-    @State var progress7: CGFloat = 0.0
-    @State var progress8: CGFloat = 0.0
+    @StateObject private var progressPublisher1 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher2 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher3 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher4 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher5 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher6 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher7 = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var progressPublisher8 = DoubleGenerator(averageFrequency: 8)
     
     var body: some View {
         AutoStack {
-            GeometryReader { geometry in
-                VStack {
-                    ViewThatFits {
-                        VStack {
-                            AutoStack {
-                                Text("\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))")
-                                    .multilineTextAlignment(.leading)
-                                    .animation(.none)
+            if vSizeClass == .regular && hSizeClass == .regular {
+                GeometryReader { geometry in
+                    VStack {
+                        ViewThatFits {
+                            VStack {
+                                AutoStack {
+                                    Text("\(Lorem.word(index: 1))\n\(Lorem.word(index: 2))\n\(Lorem.word(index: 3))\n\(Lorem.word(index: 4))")
+                                        .multilineTextAlignment(.leading)
+                                        .animation(.none)
+                                    Spacer()
+                                    VStack {
+                                        BinaryView(value: 62)
+                                        BinaryView(value: 25)
+                                    }
+                                }
                                 Spacer()
-                                VStack {
-                                    BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
-                                    BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
-                                }
                             }
-                            Spacer()
+                            EmptyView()
                         }
-                        EmptyView()
-                    }
-                    AutoGrid(spacing: 16) {
-                        ForEach(0..<(300 < min(geometry.size.width, geometry.size.height) ? 4 : 2)) { index in
-                            CircularProgressView(value: {
-                                switch index {
-                                case 0:
-                                    return self.$progress5
-                                case 1:
-                                    return self.$progress6
-                                case 2:
-                                    return self.$progress7
-                                default:
-                                    return self.$progress8
+                        AutoGrid(spacing: 16) {
+                            ForEach(0..<(300 < min(geometry.size.width, geometry.size.height) ? 4 : 2)) { index in
+                                CircularProgressView(value: {
+                                    switch index {
+                                    case 0:
+                                        return self.$progressPublisher1.value
+                                    case 1:
+                                        return self.$progressPublisher2.value
+                                    case 2:
+                                        return self.$progressPublisher3.value
+                                    default:
+                                        return self.$progressPublisher4.value
+                                    }
+                                }()) {
+                                    Text(Lorem.word(index: 5 + index))
                                 }
-                            }())
-                            .frame(minWidth: 56, idealWidth: 100, minHeight: 56, idealHeight: 100)
-                            .overlay {
-                                Text(Lorem.word(random: self.random))
-                                    .animation(.none)
+                                .frame(minWidth: 56, idealWidth: system.circularProgressWidgetIdealLength, minHeight: 56, idealHeight: system.circularProgressWidgetIdealLength)
                             }
                         }
                     }
+                    .position(x: geometry.size.width/2, y: geometry.size.height/2)
                 }
-                .position(x: geometry.size.width/2, y: geometry.size.height/2)
             }
-            AutoStack {
+            VStack {
                 GeometryReader { geometry in
                     VStack(spacing: 0) {
                         ZStack(alignment: .bottom) {
                             Ellipse()
-                                .stroke(Color(color: .primary, opacity: .max), lineWidth: 4)
+                                .stroke(Color(color: .primary, opacity: .max), lineWidth: system.mediumLineWidth)
                                 .frame(width: geometry.size.height/4, height: geometry.size.height/2, alignment: .center)
                             Ellipse()
-                                .stroke(Color(color: .primary, opacity: .max), lineWidth: 4)
+                                .stroke(Color(color: .primary, opacity: .max), lineWidth: system.mediumLineWidth)
                                 .frame(width: geometry.size.height/8, height: geometry.size.height/4, alignment: .center)
                             ShipData.shared.icon
                                 .aspectRatio(contentMode: .fit)
@@ -95,12 +98,12 @@ struct PlanetView: View {
                                 .clipShape(Circle())
                             Sphere(vertical: self.planetLines(size: geometry.size), horizontal: self.planetLines(size: geometry.size))
                                 .trim(from: 0.0, to: self.sphereAnimationProgress)
-                                .stroke(Color(color: .primary, opacity: .max), lineWidth: 4)
+                                .stroke(Color(color: .primary, opacity: .max), lineWidth: system.mediumLineWidth)
                                 .rotationEffect(Angle(degrees: self.planetAngle))
                             ForEach(self.points.indices) { i in
                                 HStack {
                                     if self.pointIconsAreCircles {
-                                        Image(CircleIcon.randomName(random: self.random))
+                                        CircleIcon.image(index: 8)
                                             .foregroundColor(Color(color: .tertiary, opacity: .max))
                                             .shadow(color: Color(color: .primary, opacity: .min), radius: 8, x: 0, y: 0)
                                     } else {
@@ -108,12 +111,12 @@ struct PlanetView: View {
                                             RoundedRectangle(cornerRadius: system.cornerRadius(forLength: 24))
                                                 .fill(Color(color: .tertiary, opacity: .max))
                                                 .frame(width: 24, height: 24)
-                                            Image(GeneralIcon.randomName(random: self.random))
+                                            GeneralIcon.image(index: 9)
                                                 .foregroundColor(Color(color: .tertiary, opacity: .min))
                                         }
                                     }
                                     if self.pointsHaveLabels {
-                                        Text(Lorem.word(random: self.random))
+                                        Text(Lorem.word(index: 8))
                                             .frame(minWidth: 0, idealWidth: nil, maxWidth: 100)
                                             .fixedSize()
                                             .lineLimit(nil)
@@ -130,7 +133,7 @@ struct PlanetView: View {
                     .frame(minHeight: geometry.size.height/2)
                     .position(x: geometry.size.width/2, y: geometry.size.height/2)
                 }
-                HStack(spacing: system.basicShape == .triangle ? -8 : 16) {
+                HStack(spacing: system.basicShapeHStackSpacing) {
                     NavigationButton(to: .nearby) {
                         Text("Nearby")
                     }
@@ -148,11 +151,11 @@ struct PlanetView: View {
                 VStack {
                     AutoStack {
                         VStack {
-                            BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
-                            BinaryView(value: self.random.nextInt(in: 0...31), maxValue: 31)
+                            BinaryView(value: 18)
+                            BinaryView(value: 4)
                         }
                         Spacer()
-                        Text("\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))\n\(Lorem.word(random: self.random))")
+                        Text("\(Lorem.word(index: 9))\n\(Lorem.word(index: 10))\n\(Lorem.word(index: 11))\n\(Lorem.word(index: 12))")
                             .multilineTextAlignment(.trailing)
                             .animation(.none)
                     }
@@ -162,40 +165,38 @@ struct PlanetView: View {
                             CircularProgressView(value: {
                                 switch index {
                                 case 0:
-                                    return self.$progress5
+                                    return self.$progressPublisher5.value
                                 case 1:
-                                    return self.$progress6
+                                    return self.$progressPublisher6.value
                                 case 2:
-                                    return self.$progress7
+                                    return self.$progressPublisher7.value
                                 default:
-                                    return self.$progress8
+                                    return self.$progressPublisher8.value
                                 }
-                            }())
-                            .frame(minWidth: 56, idealWidth: 100, minHeight: 56, idealHeight: 100)
-                            .overlay {
-                                Text(Lorem.word(random: self.random))
-                                    .animation(.none)
+                            }()) {
+                                Text(Lorem.word(index: 13 + index))
                             }
+                            .frame(minWidth: 56, idealWidth: system.circularProgressWidgetIdealLength, minHeight: 56, idealHeight: system.circularProgressWidgetIdealLength)
                         }
                     }
                 }
                 .position(x: geometry.size.width/2, y: geometry.size.height/2)
             }
         }
-            .multilineTextAlignment(.center)
-            .onAppear() {
-                withAnimation(.linear(duration: 1.0)) {
-                    self.sphereAnimationProgress = 1.0
-                }
-                self.progress1 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress2 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress3 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress4 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress5 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress6 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress7 = CGFloat(self.random.nextDouble(in: 0.1...1))
-                self.progress8 = CGFloat(self.random.nextDouble(in: 0.1...1))
+        .multilineTextAlignment(.center)
+        .onAppear() {
+            withAnimation(.linear(duration: 1.0)) {
+                self.sphereAnimationProgress = 1.0
             }
+        }
+        .animation(.linear(duration: 8), value: progressPublisher1.value)
+        .animation(.linear(duration: 8), value: progressPublisher2.value)
+        .animation(.linear(duration: 8), value: progressPublisher3.value)
+        .animation(.linear(duration: 8), value: progressPublisher4.value)
+        .animation(.linear(duration: 8), value: progressPublisher5.value)
+        .animation(.linear(duration: 8), value: progressPublisher6.value)
+        .animation(.linear(duration: 8), value: progressPublisher7.value)
+        .animation(.linear(duration: 8), value: progressPublisher8.value)
     }
     
     init() {

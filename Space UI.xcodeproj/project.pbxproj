@@ -140,6 +140,14 @@
 		1B491181257D903100D32F2D /* AutoGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B49117F257D903100D32F2D /* AutoGrid.swift */; };
 		1B491189257DCD8F00D32F2D /* ShapeDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B491188257DCD8F00D32F2D /* ShapeDirection.swift */; };
 		1B49118A257DCD8F00D32F2D /* ShapeDirection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B491188257DCD8F00D32F2D /* ShapeDirection.swift */; };
+		1B62A35328D4F63D00727BC2 /* LayoutThatFits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35228D4F63D00727BC2 /* LayoutThatFits.swift */; };
+		1B62A35428D4F63D00727BC2 /* LayoutThatFits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35228D4F63D00727BC2 /* LayoutThatFits.swift */; };
+		1B62A35628D5078E00727BC2 /* StackThatFits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35528D5078E00727BC2 /* StackThatFits.swift */; };
+		1B62A35728D5078E00727BC2 /* StackThatFits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35528D5078E00727BC2 /* StackThatFits.swift */; };
+		1B62A35928D5108500727BC2 /* FadeScrollEdges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35828D5108500727BC2 /* FadeScrollEdges.swift */; };
+		1B62A35A28D5108500727BC2 /* FadeScrollEdges.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35828D5108500727BC2 /* FadeScrollEdges.swift */; };
+		1B62A35C28D56DBC00727BC2 /* NumberGenerators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35B28D56DBC00727BC2 /* NumberGenerators.swift */; };
+		1B62A35D28D56DBC00727BC2 /* NumberGenerators.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B62A35B28D56DBC00727BC2 /* NumberGenerators.swift */; };
 		1B6C435623BEC15300A149F3 /* Trapezoid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6C435523BEC15300A149F3 /* Trapezoid.swift */; };
 		1B6C435723BEC15300A149F3 /* Trapezoid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6C435523BEC15300A149F3 /* Trapezoid.swift */; };
 		1B7FB7DA243054FF00CDCF40 /* HostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B7FB7D9243054FF00CDCF40 /* HostingController.swift */; };
@@ -353,6 +361,10 @@
 		1B49117F257D903100D32F2D /* AutoGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoGrid.swift; sourceTree = "<group>"; };
 		1B491188257DCD8F00D32F2D /* ShapeDirection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShapeDirection.swift; sourceTree = "<group>"; };
 		1B59D9C8239E04F000D1AB20 /* Space UI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Space UI.entitlements"; sourceTree = "<group>"; };
+		1B62A35228D4F63D00727BC2 /* LayoutThatFits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutThatFits.swift; sourceTree = "<group>"; };
+		1B62A35528D5078E00727BC2 /* StackThatFits.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StackThatFits.swift; sourceTree = "<group>"; };
+		1B62A35828D5108500727BC2 /* FadeScrollEdges.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FadeScrollEdges.swift; sourceTree = "<group>"; };
+		1B62A35B28D56DBC00727BC2 /* NumberGenerators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberGenerators.swift; sourceTree = "<group>"; };
 		1B6C435523BEC15300A149F3 /* Trapezoid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trapezoid.swift; sourceTree = "<group>"; };
 		1B7FB7D9243054FF00CDCF40 /* HostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingController.swift; sourceTree = "<group>"; };
 		1B8074FC2429B11B00414F6B /* VerticalScanBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalScanBar.swift; sourceTree = "<group>"; };
@@ -517,6 +529,8 @@
 			isa = PBXGroup;
 			children = (
 				1B3BF60A2897898800E87899 /* LayoutFuncs.swift */,
+				1B62A35228D4F63D00727BC2 /* LayoutThatFits.swift */,
+				1B62A35528D5078E00727BC2 /* StackThatFits.swift */,
 				1B43937323B7D16A00660F96 /* AutoStack.swift */,
 				1B49117F257D903100D32F2D /* AutoGrid.swift */,
 				1BD829EF2892F38400AA5782 /* CircularStack.swift */,
@@ -529,6 +543,7 @@
 			isa = PBXGroup;
 			children = (
 				1BE56A0B23C41FAA0025D420 /* ShipData.swift */,
+				1B62A35B28D56DBC00727BC2 /* NumberGenerators.swift */,
 				1B3C605B24E1FE7C009FB291 /* TargetState.swift */,
 				1B3C605E24E20657009FB291 /* NearbyShipsState.swift */,
 				1BF3B53423D0EC0B00161780 /* MessagesState.swift */,
@@ -591,6 +606,7 @@
 				1B43931E23AC6FE900660F96 /* DoorView.swift */,
 				1B43931C23AC16B800660F96 /* LargePowerProgressView.swift */,
 				1B43932923B0710600660F96 /* ComsMessageView.swift */,
+				1B62A35828D5108500727BC2 /* FadeScrollEdges.swift */,
 				1B43937C23BC32D100660F96 /* KeyboardView.swift */,
 				1BE56A1123C813B80025D420 /* KeyboardKeyView.swift */,
 				1B43932B23B07AB500660F96 /* NearbyShipsView.swift */,
@@ -964,6 +980,7 @@
 				1B43938723BD119D00660F96 /* CircularProgressView.swift in Sources */,
 				1B43935923B6F4CF00660F96 /* GroupedButtons.swift in Sources */,
 				1B43933C23B6F48000660F96 /* AppDelegate.swift in Sources */,
+				1B62A35D28D56DBC00727BC2 /* NumberGenerators.swift in Sources */,
 				1BF3B53923D12E0700161780 /* GKRandom.swift in Sources */,
 				1B43938A23BD353F00660F96 /* CircularSegmentedView.swift in Sources */,
 				1B43934D23B6F4CF00660F96 /* Shapes.swift in Sources */,
@@ -998,6 +1015,7 @@
 				1BF3B54223D3C8F500161780 /* PieSlice.swift in Sources */,
 				1B43936123B6F77900660F96 /* Lorem.swift in Sources */,
 				1B43935D23B6F4D400660F96 /* ExternalDisplayView.swift in Sources */,
+				1B62A35728D5078E00727BC2 /* StackThatFits.swift in Sources */,
 				1BDC2C9824305F340072D94B /* SeedView.swift in Sources */,
 				1B8074FE2429B11B00414F6B /* VerticalScanBar.swift in Sources */,
 				1B3BF60828977F2000E87899 /* CircularStack.swift in Sources */,
@@ -1012,6 +1030,7 @@
 				1B43935123B6F4CF00660F96 /* LargePowerProgressView.swift in Sources */,
 				1B3BF60C2897898800E87899 /* LayoutFuncs.swift in Sources */,
 				1B43934C23B6F4CF00660F96 /* ScreenView.swift in Sources */,
+				1B62A35428D4F63D00727BC2 /* LayoutThatFits.swift in Sources */,
 				1B43937223B6F87500660F96 /* RootView.swift in Sources */,
 				1B43936323B6F77900660F96 /* AudioController.swift in Sources */,
 				1B3C606024E20657009FB291 /* NearbyShipsState.swift in Sources */,
@@ -1020,6 +1039,7 @@
 				1BDC2C9B243272130072D94B /* GridCompass.swift in Sources */,
 				1BF06E5724202814001C783D /* PlanetDetailsView.swift in Sources */,
 				1BA4B27425737E82002413D8 /* FillAndBorder.swift in Sources */,
+				1B62A35A28D5108500727BC2 /* FadeScrollEdges.swift in Sources */,
 				1B3BF60728977A2A00E87899 /* ParallaxView.swift in Sources */,
 				1B39723A2424069E0087CD19 /* Compass.swift in Sources */,
 				1B43935323B6F4CF00660F96 /* ComsMessageView.swift in Sources */,
@@ -1038,12 +1058,15 @@
 				1B43932E23B07BAA00660F96 /* AsteriskShape.swift in Sources */,
 				1B998D862499B07A005EAA41 /* GridCoord.swift in Sources */,
 				1BE24F282347DAE7008859FE /* AppDelegate.swift in Sources */,
+				1B62A35328D4F63D00727BC2 /* LayoutThatFits.swift in Sources */,
 				1B43931D23AC16B800660F96 /* LargePowerProgressView.swift in Sources */,
 				1B8C87332845B31200EEC921 /* SquadView.swift in Sources */,
 				1BB076CD2504489500459E7B /* LightsOutView.swift in Sources */,
 				1B43933423B6BF1600660F96 /* DecorativeRingView.swift in Sources */,
+				1B62A35628D5078E00727BC2 /* StackThatFits.swift in Sources */,
 				1BFE88F524E604A600F5596F /* SinglePlanetView.swift in Sources */,
 				1B1C686B23A7176E00D610B1 /* ShieldView.swift in Sources */,
+				1B62A35C28D56DBC00727BC2 /* NumberGenerators.swift in Sources */,
 				1B43938C23BD426900660F96 /* DecorativeRaysView.swift in Sources */,
 				1BE24F412347DB87008859FE /* Lorem.swift in Sources */,
 				1B998D8224995CD3005EAA41 /* SudokuView.swift in Sources */,
@@ -1068,6 +1091,7 @@
 				1B491189257DCD8F00D32F2D /* ShapeDirection.swift in Sources */,
 				1B43938923BD353F00660F96 /* CircularSegmentedView.swift in Sources */,
 				1B43938023BC616000660F96 /* PoissonDiskSampling.swift in Sources */,
+				1B62A35928D5108500727BC2 /* FadeScrollEdges.swift in Sources */,
 				1B46FFD128CBE20000EBD761 /* SystemColors.swift in Sources */,
 				1B998D842499A7B0005EAA41 /* BrokenKeypadView.swift in Sources */,
 				1BE56A0C23C41FAA0025D420 /* ShipData.swift in Sources */,

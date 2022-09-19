@@ -32,7 +32,7 @@ struct ShieldView: View {
         AutoStack {
             ZStack {
                 Circle()
-                    .strokeBorder(LinearGradient(gradient: Gradient(colors: [Color(color: .tertiary, opacity: .max), Color(color: .primary, opacity: .min)]), startPoint: .top, endPoint: .bottom), lineWidth: 8)
+                    .strokeBorder(LinearGradient(gradient: Gradient(colors: [Color(color: .tertiary, opacity: .max), Color(color: .primary, opacity: .min)]), startPoint: .top, endPoint: .bottom), lineWidth: system.thickLineWidth)
                     .rotationEffect(Angle(degrees: self.shipData.shieldAngle))
                 ShipData.shared.icon
                     .resizable()
@@ -45,19 +45,19 @@ struct ShieldView: View {
                     Text("Power")
                 }
             , alignment: .top)
-            .overlay(
+            .overlay(alignment: .topLeading) {
                 RandomWidget(random: random)
-                    .frame(width: 100, height: 100, alignment: .center)
+                    .frame(width: 100, height: 100, alignment: .topLeading)
                     .offset(safeCornerOffsets.topLeading)
-            , alignment: .topLeading)
-            .overlay(
+            }
+            .overlay(alignment: .topTrailing) {
                 Spirograph(innerRadius: 42, outerRadius: 22, distance: self.atomDistance)
-                    .stroke(Color(color: .primary, opacity: .max), lineWidth: 2)
-                    .frame(width: 150, height: 150, alignment: .center)
+                    .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
+                    .frame(width: 150, height: 150, alignment: .topTrailing)
                     .rotationEffect(Angle(degrees: self.atomAngle))
                     .overlay(Text(word2).fixedSize())
                     .offset(safeCornerOffsets.topTrailing)
-            , alignment: .topTrailing)
+            }
             .overlay(
                 HStack {
                     Button(action: {

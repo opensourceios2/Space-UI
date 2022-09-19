@@ -9,8 +9,8 @@
 import SwiftUI
 import GameplayKit
 
-var system = SystemAppearance(seed: {
-    let savedSeed = UserDefaults.standard.integer(forKey: "seed")
+var seed: UInt64 = {
+    let savedSeed = UserDefaults.standard.integer(forKey: UserDefaults.Key.seed)
     if savedSeed == 0 {
         let newSeed = UInt64(arc4random())
         UserDefaults.standard.set(Int(newSeed), forKey: UserDefaults.Key.seed)
@@ -18,7 +18,8 @@ var system = SystemAppearance(seed: {
     } else {
         return UInt64(savedSeed)
     }
-}())
+}()
+var system = SystemAppearance(seed: seed)
 
 enum SystemColor {
     case primary, secondary, tertiary, danger
@@ -54,7 +55,7 @@ enum CutoutStyle {
     case angle45, roundedAngle45, roundedRectangle, halfRounded, curved, none
 }
 enum CutoutEdge {
-    case top, bottom, both, none
+    case top, bottom
 }
 enum CutoutPosition {
     case leading, center, trailing
@@ -71,7 +72,8 @@ final class SystemAppearance: ObservableObject {
     let random: GKRandomDistribution
     let seed: UInt64
     
-    // Colors
+    // Subsystems
+    let design: DesignPrinciples
     let colors: SystemColors
     
     // General
@@ -92,19 +94,32 @@ final class SystemAppearance: ObservableObject {
     var prefersButtonBorders: Bool
     var prefersDashedLines: Bool
     var prefersRandomLineDashing: Bool
+    var basicShapeHStackSpacing: CGFloat
     var borderInsetAmount: CGFloat
+    var thinLineWidth: CGFloat {
+        mediumLineWidth / 2
+    }
+    var mediumLineWidth: CGFloat
+    var thickLineWidth: CGFloat {
+        mediumLineWidth * 2
+    }
+    var circularProgressWidgetIdealLength: CGFloat {
+        #if os(tvOS) || targetEnvironment(macCatalyst)
+        return 100
+        #else
+        return 64
+        #endif
+    }
     
     // Screen
     var screenShapeCase: ScreenShapeCase
     var screenMinBrightness: CGFloat
     var screenFilter: ScreenFilter
-    private var screenLineWidth: CGFloat
-    var screenStrokeStyle: StrokeStyle {
-        StrokeStyle(lineWidth: screenLineWidth, lineCap: lineCap, dash: lineDash(lineWidth: screenLineWidth))
+    var screenStrokeStyle: StrokeStyle? {
+        prefersBorders ? StrokeStyle(lineWidth: thickLineWidth, lineCap: lineCap, dash: lineDash(lineWidth: thickLineWidth)) : nil
     }
-    private var baseScreenPadding: EdgeInsets
     var generalCutoutStyle: CutoutStyle
-    private var cutoutEdge: CutoutEdge
+    private var preferedCutoutEdges: Set<CutoutEdge>
     private var topCutoutPosition: CutoutPosition
     var bottomCutoutPosition: CutoutPosition
     var topMorseCodeSegments: [MorseCodeLine.Segment]?
@@ -114,15 +129,9 @@ final class SystemAppearance: ObservableObject {
     private var defaultFontName: Font.Name
     var fontOverride = false
     var fontName: Font.Name? {
-        return fontOverride ? nil : defaultFontName
+        fontOverride ? nil : defaultFontName
     }
-    #if os(tvOS)
-    let defaultFontSize: CGFloat = 30.0
-    #elseif targetEnvironment(macCatalyst)
-    let defaultFontSize: CGFloat = 24.0
-    #else
-    let defaultFontSize: CGFloat = 20.0
-    #endif
+    var defaultFontSize: CGFloat
     var actionSoundResource: AudioController.Resource
     var buttonSoundResource: AudioController.Resource
     var alarmSoundResource: AudioController.Resource
@@ -133,16 +142,15 @@ final class SystemAppearance: ObservableObject {
         random = GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
         srand48(Int(seed)) // Set seed for drand48?
         
-        // Design Principles
-        let design = DesignPrinciples(simplicity: random.nextFraction(), sharpness: random.nextFraction(), order: random.nextFraction(), balance: random.nextFraction())
-        
-        // Colors
+        // Subsystems
+        design = DesignPrinciples(simplicity: random.nextFraction(), sharpness: random.nextFraction(), order: random.nextFraction(), balance: random.nextFraction(), boldness: random.nextFraction())
         colors = SystemColors(random: random)
         
         // General
         screenMinBrightness = CGFloat(random.nextDouble(in: 0...0.4))
         backgroundStyle = random.nextElement(in: [BackgroundStyle.gradientUp, .gradientDown, .color])!
         screenFilter = random.nextElement(in: [ScreenFilter.hLines, .vLines, .none])!
+        
         let allScreenShapeCases: [WeightedDesignElement<ScreenShapeCase>] = [
 //            .init(baseWeight: 0.1, design: .init(simplicity: 1, sharpness: 0), element: .circle),
 //            .init(baseWeight: 0.1, design: .init(simplicity: 0.9, sharpness: 1), element: .triangle),
@@ -156,14 +164,17 @@ final class SystemAppearance: ObservableObject {
         screenShapeCase = random.nextWeightedElement(in: allScreenShapeCases, with: design)!
         
         alignment = random.nextElement(in: [Alignment.vertical, .horizontal, .none])!
-        switch screenShapeCase {
-        case .circle:
-            basicShape = .circle
-        case .triangle:
-            basicShape = .triangle
-        default:
-            basicShape = random.nextElement(in: [BasicShape.circle, .triangle, .square, .hexagon, .trapezoid, .diamond])!
-        }
+        
+        let allBasicShapes: [WeightedDesignElement<BasicShape>] = [
+            .init(baseWeight: 1, design: .init(simplicity: 1.0, sharpness: 0.0), element: .circle),
+            .init(baseWeight: 1, design: .init(simplicity: 0.7, sharpness: 1.0), element: .triangle),
+            .init(baseWeight: 1, design: .init(simplicity: 0.6, sharpness: 0.5), element: .square),
+            .init(baseWeight: 1, design: .init(simplicity: 0.4, sharpness: 0.3), element: .hexagon),
+            .init(baseWeight: 1, design: .init(simplicity: 0.1, sharpness: 0.7), element: .trapezoid),
+            .init(baseWeight: 1, design: .init(simplicity: 0.6, sharpness: 0.5), element: .diamond)
+        ]
+        basicShape = random.nextWeightedElement(in: allBasicShapes, with: design)!
+        
         switch basicShape {
         case .hexagon, .triangle, .trapezoid:
             shapeDirection = (random.nextBool(chance: 0.333)) ? .down : .up
@@ -233,15 +244,15 @@ final class SystemAppearance: ObservableObject {
         roundedCornerFraction = 0.1 + CGFloat(random.nextDouble(in: 0...0.1))
         self.cornerStyle = cornerStyle
         if screenShapeCase == .circle || screenShapeCase == .triangle {
-            cutoutEdge = .none
+            preferedCutoutEdges = []
         } else {
-            let allCutoutEdges: [WeightedElement<CutoutEdge>] = [
-                .init(weight: 0.333, element: .none),
-                .init(weight: 0.333, element: .both),
-                .init(weight: 1, element: .top),
-                .init(weight: 1, element: .bottom)
+            let allCutoutEdges: [WeightedElement<Set<CutoutEdge>>] = [
+                .init(weight: 0.333, element: []),
+                .init(weight: 0.333, element: [.top, .bottom]),
+                .init(weight: 1, element: [.top]),
+                .init(weight: 1, element: [.bottom])
             ]
-            cutoutEdge = random.nextWeightedElement(in: allCutoutEdges)!
+            preferedCutoutEdges = random.nextWeightedElement(in: allCutoutEdges)!
         }
         let allCutoutPositions: [WeightedElement<CutoutPosition>] = [
             .init(weight: 1, element: .leading),
@@ -299,36 +310,42 @@ final class SystemAppearance: ObservableObject {
         prefersButtonBorders = random.nextBool(chance: 0.333) ? false : prefersBorders
         let prefersDashedLines = random.nextBool(chance: 0.333)
         self.prefersDashedLines = prefersDashedLines
+        if preferedButtonSizingMode == .fixed {
+            switch basicShape {
+            case .triangle:
+                basicShapeHStackSpacing = -12
+            case .trapezoid:
+                basicShapeHStackSpacing = 0
+            case .hexagon:
+                basicShapeHStackSpacing = 12
+            default:
+                basicShapeHStackSpacing = 16
+            }
+        } else {
+            basicShapeHStackSpacing = 16
+        }
         borderInsetAmount = random.nextBool(chance: 0.1) ? CGFloat(random.nextInt(upperBound: 7))*2.0 : 0.0
         prefersRandomLineDashing = random.nextBool(chance: 0.2) ? prefersDashedLines : false
-        screenLineWidth = prefersBorders ? CGFloat(Int.random(in: 2...6))*2.0 : 0.0
+        mediumLineWidth = 2.0 + CGFloat(design.boldness * 4.0)
         
-        let allEdges = borderInsetAmount + (screenShapeCase == .horizontalHexagon ? 0 : 25)
-        #if targetEnvironment(macCatalyst)
-        if screenShapeCase != .circle, screenShapeCase != .triangle {
-            let vertical = allEdges + CGFloat.random(in: 25...100)
-            let horizontal = allEdges + CGFloat.random(in: 50...200)
-            baseScreenPadding = EdgeInsets(top: vertical, leading: horizontal, bottom: vertical, trailing: horizontal)
-        }
-        #endif
-        baseScreenPadding = EdgeInsets(top: allEdges, leading: allEdges, bottom: allEdges, trailing: allEdges)
-        
-        let allFonts: [WeightedElement<Font.Name>] = [
-            .init(weight: 1, element: .abEquinox),
-            .init(weight: 1, element: .auraboo),
-            .init(weight: 2, element: .aurebeshBloops),
-            .init(weight: 2, element: .aurebeshDroid),
-            .init(weight: 1, element: .aurebeshRacerFast),
-            .init(weight: 1, element: .baybayin),
-            .init(weight: 1, element: .fresian),
-            .init(weight: 2, element: .galactico),
-            .init(weight: 1, element: .mando),
-            .init(weight: 1, element: .sga2),
-            .init(weight: 1, element: .theCalling),
-            .init(weight: 1, element: .tradeFederation),
-            .init(weight: 4, element: .aurekBesh)
+        let allFonts: [WeightedDesignElement<Font.Name>] = [
+            .init(baseWeight: 1, design: .init(sharpness: 0.5, boldness: 1.0), element: .abEquinox),
+            .init(baseWeight: 1, design: .init(sharpness: 0.4, boldness: 0.7), element: .auraboo),
+            .init(baseWeight: 2, design: .init(sharpness: 0.0, boldness: 0.8), element: .aurebeshBloops),
+            .init(baseWeight: 2, design: .init(sharpness: 0.1, boldness: 0.6), element: .aurebeshDroid),
+            .init(baseWeight: 1, design: .init(sharpness: 0.6, boldness: 0.8), element: .aurebeshRacerFast),
+            .init(baseWeight: 4, design: .init(sharpness: 0.9, boldness: 0.5), element: .aurekBesh),
+            .init(baseWeight: 1, design: .init(sharpness: 0.1, boldness: 0.4), element: .baybayin),
+            .init(baseWeight: 1, design: .init(sharpness: 0.6, boldness: 0.8), element: .fresian),
+            .init(baseWeight: 2, design: .init(sharpness: 0.9, boldness: 0.6), element: .galactico),
+            .init(baseWeight: 1, design: .init(sharpness: 1.0, boldness: 0.2), element: .mando),
+            .init(baseWeight: 1, design: .init(sharpness: 0.7, boldness: 0.7), element: .sga2),
+            .init(baseWeight: 1, design: .init(sharpness: 0.4, boldness: 0.0), element: .theCalling),
+            .init(baseWeight: 1, design: .init(sharpness: 0.3, boldness: 0.6), element: .tradeFederation)
         ]
-        defaultFontName = random.nextWeightedElement(in: allFonts)!
+        defaultFontName = random.nextWeightedElement(in: allFonts, with: design)!
+        defaultFontSize = defaultFontName.defaultFontSize
+        
         actionSoundResource = random.nextBool() ? .action : .action2
         buttonSoundResource = random.nextElement(in: [AudioController.Resource.button, .button2, .button3])!
         alarmSoundResource = random.nextBool() ? .alarmLoop : .alarmHighLoop
@@ -373,6 +390,7 @@ final class SystemAppearance: ObservableObject {
         return .all
         #else
         if traitCollection.verticalSizeClass == .compact {
+            // Horizontal iPhone; Ignore vertical, and keep horizontal safe area for simplicity
             return .vertical
         } else {
             switch screenShapeCase {
@@ -400,75 +418,151 @@ final class SystemAppearance: ObservableObject {
             default:
                 break
             }
-            return .all
+            return (system.topMorseCodeSegments == nil) ? .all : [.leading, .trailing, .bottom]
         }
         #endif
     }
     
     private func cameraNotchObscuresScreenShape(screenSize: CGSize) -> Bool {
-        edgesIgnoringSafeAreaForScreenShape(screenSize: screenSize, traitCollection: UIScreen.main.traitCollection).contains(.top) && screenSize.width < 500
+        edgesIgnoringSafeAreaForScreenShape(screenSize: screenSize, traitCollection: UIScreen.main.traitCollection).contains(.top) && screenSize.width < 500 && topMorseCodeSegments == nil
     }
     
     /// Insets so that content is not obscured by the screen shape and cutouts
     func mainContentInsets(screenSize: CGSize) -> EdgeInsets {
+        let screenShapeCase = actualScreenShapeCase(screenSize: screenSize)
         
-        func mainContentHorizontalInset(screenSize: CGSize) -> CGFloat {
-            switch screenShapeCase {
-            case .capsule:
-                return screenSize.height <= screenSize.width ? screenSize.height/4 : 0.0
-            case .trapezoid, .horizontalHexagon:
-                let screenTrapezoidHexagonCornerOffset = max(44, screenSize.width/8)
-                return screenTrapezoidHexagonCornerOffset
-            case .croppedCircle:
-                let screenTrapezoidOrHexagonCornerOffset = max(44, screenSize.width/8)
-                return screenSize.height <= screenSize.width ? screenTrapezoidOrHexagonCornerOffset : 0.0
-            case .circle, .triangle:
-                return screenSize.width/2 - min(screenSize.width, screenSize.height)*0.4
-            default:
-                return 0.0
-            }
-        }
-        func mainContentVerticalInset(screenSize: CGSize) -> CGFloat {
+        let topOnly = topCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
+        let bottomOnly = bottomCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
+        
+        let borderInset = system.prefersBorders ? (system.thickLineWidth + system.borderInsetAmount) : 0
+        
+        #if targetEnvironment(macCatalyst)
+        let normalShape = (screenShapeCase != .circle && screenShapeCase != .triangle)
+        let platformVertical = normalShape ? 50 : 0.0
+        let platformHorizontal = normalShape ? 100 : 0.0
+        #else
+        let platformVertical: CGFloat = 0.0
+        let platformHorizontal: CGFloat = 0.0
+        #endif
+        
+        let vertical: CGFloat = (500 < screenSize.height ? 16 : 8) + borderInset + platformVertical + {
             switch screenShapeCase {
             case .capsule:
                 return screenSize.height <= screenSize.width ? 0.0 : screenSize.width/4
             case .verticalHexagon:
-                let screenTrapezoidOrHexagonCornerOffset = max(44, screenSize.width/8)
-                return screenTrapezoidOrHexagonCornerOffset
+                return ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize)
             case .croppedCircle:
-                let screenTrapezoidHexagonCornerOffset = max(44, screenSize.width/8)
+                let screenTrapezoidHexagonCornerOffset = ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) * 0.75
                 return screenSize.height <= screenSize.width ? 0.0 : screenTrapezoidHexagonCornerOffset
             case .circle, .triangle:
                 return screenSize.height/2 - min(screenSize.width, screenSize.height)*0.4
             default:
                 return 0.0
             }
-        }
+        }()
+        let horizontal: CGFloat = 8 + borderInset + platformHorizontal + {
+            switch screenShapeCase {
+            case .capsule:
+                return screenSize.height <= screenSize.width ? screenSize.height/4 : 0.0
+            case .trapezoid:
+                return ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) - 12
+            case .horizontalHexagon:
+                return ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) - 25
+            case .croppedCircle:
+                let screenTrapezoidOrHexagonCornerOffset = ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) * 0.75
+                return screenSize.height <= screenSize.width ? screenTrapezoidOrHexagonCornerOffset : 0.0
+            case .circle, .triangle:
+                return screenSize.width/2 - min(screenSize.width, screenSize.height)*0.4
+            default:
+                return 0.0
+            }
+        }()
         
-        let topOnly = topCutoutStyle(screenSize: screenSize, availableWidth: 999, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
-        let bottomOnly = bottomCutoutStyle(screenSize: screenSize, availableWidth: 999, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
-        let vertical = mainContentVerticalInset(screenSize: screenSize)
-        let horizontal = mainContentHorizontalInset(screenSize: screenSize)
-        
-        let top = topOnly + vertical + baseScreenPadding.top
-        let bottom = bottomOnly + vertical + baseScreenPadding.bottom
-        return EdgeInsets(top: top, leading: horizontal + baseScreenPadding.leading, bottom: bottom, trailing: horizontal + baseScreenPadding.trailing)
+        let top = topOnly + vertical
+        let bottom = bottomOnly + vertical
+        return EdgeInsets(top: top, leading: horizontal, bottom: bottom, trailing: horizontal)
     }
     
+    func actualScreenShapeCase(screenSize: CGSize) -> ScreenShapeCase {
+        switch system.screenShapeCase {
+        case .verticalHexagon, .horizontalHexagon:
+            switch (500 < screenSize.height, 500 < screenSize.width) {
+            case (true, false):
+                return .verticalHexagon
+            case (false, true):
+                return .horizontalHexagon
+            default:
+                return system.screenShapeCase
+            }
+        default:
+            return system.screenShapeCase
+        }
+    }
+    
+    /// Offsets for views in screen corners, to help them fit a bit better
     func safeCornerOffsets(screenSize: CGSize) -> SafeCornerOffsets {
-        #if os(tvOS)
-        let maxCornerOffset: CGFloat = 128
-        #else
-        let maxCornerOffset: CGFloat = 40
-        #endif
-        let topCorners = min(cornerRadius(forLength: 600)/4, maxCornerOffset)
-        let bottomCorners = min(cornerRadius(forLength: 600)/4, maxCornerOffset)
-        let topCutoutCompensation = ((cutoutEdge == .top || cutoutEdge == .both) && screenSize.width >= 500) ? -ScreenShape.cutoutHeight : 0.0
-        let bottomCutoutCompensation = ((cutoutEdge == .bottom || cutoutEdge == .both) && screenSize.width >= 500) ? -ScreenShape.cutoutHeight : 0.0
-        let topLeading = CGSize(width: topCorners, height: topCorners + topCutoutCompensation)
-        let topTrailing = CGSize(width: -topCorners, height: topCorners + topCutoutCompensation)
-        let bottomLeading = CGSize(width: bottomCorners, height: -(bottomCorners + bottomCutoutCompensation))
-        let bottomTrailing = CGSize(width: -bottomCorners, height: -(bottomCorners + bottomCutoutCompensation))
+        let cornerRadiusAvoidance: CGFloat = {
+            switch actualScreenShapeCase(screenSize: screenSize) {
+            case .circle, .triangle, .capsule:
+                return 0.0
+            default:
+                return min(cornerRadius(forLength: 600)/8, (screenSize.width + screenSize.height) / 24)
+            }
+        }()
+        var topLeading = CGSize(width: cornerRadiusAvoidance, height: cornerRadiusAvoidance)
+        var topTrailing = CGSize(width: -cornerRadiusAvoidance, height: cornerRadiusAvoidance)
+        var bottomLeading = CGSize(width: cornerRadiusAvoidance, height: -cornerRadiusAvoidance)
+        var bottomTrailing = CGSize(width: -cornerRadiusAvoidance, height: -cornerRadiusAvoidance)
+        
+        // Push views vertically to the edges of the screen to fill areas beside cutouts
+        if 500 < screenSize.width {
+            if topCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) != .none {
+                topLeading.height -= ScreenShape.cutoutHeight
+                topTrailing.height -= ScreenShape.cutoutHeight
+            }
+            if bottomCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) != .none {
+                bottomLeading.height += ScreenShape.cutoutHeight
+                bottomTrailing.height += ScreenShape.cutoutHeight
+            }
+        }
+        
+        // Screen shape compensation
+        switch actualScreenShapeCase(screenSize: screenSize) {
+        case .capsule:
+            let capsuleAvoidance = min(screenSize.width, screenSize.height) / 16
+            if screenSize.width < screenSize.height {
+                // Portrait; Push views horizontally toward the center
+                topLeading.width += capsuleAvoidance
+                topTrailing.width -= capsuleAvoidance
+                bottomLeading.width += capsuleAvoidance
+                bottomTrailing.width -= capsuleAvoidance
+            } else {
+                // Landscape; Push views vertically toward the center
+                topLeading.height += capsuleAvoidance
+                topTrailing.height += capsuleAvoidance
+                bottomLeading.height -= capsuleAvoidance
+                bottomTrailing.height -= capsuleAvoidance
+            }
+        case .horizontalHexagon:
+            let hexagonAvoidance = screenSize.width / 32
+            // Push views horizontally toward the center
+            topLeading.width += hexagonAvoidance
+            topTrailing.width -= hexagonAvoidance
+            bottomLeading.width += hexagonAvoidance
+            bottomTrailing.width -= hexagonAvoidance
+        case .trapezoid:
+            let offset = ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) * 0.7
+            if system.shapeDirection == .up {
+                bottomLeading.width -= offset
+                bottomTrailing.width += offset
+            } else {
+                topLeading.width -= offset
+                topTrailing.width += offset
+            }
+        default:
+            break
+        }
+        
         return SafeCornerOffsets(topLeading: topLeading, topTrailing: topTrailing, bottomLeading: bottomLeading, bottomTrailing: bottomTrailing)
     }
     
@@ -477,7 +571,7 @@ final class SystemAppearance: ObservableObject {
             return .none
         } else if (screenShapeCase == .capsule || screenShapeCase == .croppedCircle || screenShapeCase == .horizontalHexagon) && screenSize.width < screenSize.height {
             return .none
-        } else if cutoutEdge == .top || cutoutEdge == .both || cameraNotchObscuresScreenShape(screenSize: screenSize) {
+        } else if preferedCutoutEdges.contains(.top) || cameraNotchObscuresScreenShape(screenSize: screenSize) {
             return generalCutoutStyle
         } else {
             return .none
@@ -489,47 +583,54 @@ final class SystemAppearance: ObservableObject {
             return .none
         } else if (screenShapeCase == .capsule || screenShapeCase == .croppedCircle || screenShapeCase == .horizontalHexagon) && screenSize.width < screenSize.height {
             return .none
-        } else if cutoutEdge == .bottom || cutoutEdge == .both {
+        } else if preferedCutoutEdges.contains(.bottom) {
             return generalCutoutStyle
         } else {
             return .none
         }
     }
     
-    func cutoutFrame(screenRect: CGRect, forTop: Bool) -> CGRect {
-        let rect = screenRect
-        let insetRect = screenRect
+    func cutoutFrame(screenSize: CGSize, forTop: Bool) -> CGRect? {
+        if forTop {
+            guard system.topCutoutStyle(screenSize: screenSize, availableWidth: 999, insetAmount: 0) != .none else { return nil }
+        } else {
+            guard system.bottomCutoutStyle(screenSize: screenSize, availableWidth: 999, insetAmount: 0) != .none else { return nil }
+        }
+        
+        let rect = CGRect(origin: .zero, size: screenSize)
+        let insetRect = rect
         let insetAmount: CGFloat = 0.0
         
         let cornerRadius: CGFloat = {
-            let regularRadius = system.cornerRadius(forLength: min(rect.width, rect.height))
-            if regularRadius.isZero {
+            if cornerStyle == .sharp {
                 return 0.0
-            } else if system.screenShapeCase == .capsule {
+            } else if screenShapeCase == .capsule {
                 return system.cornerRadius(forLength: min(insetRect.width, insetRect.height))
-            } else if system.cornerStyle == .circular {
+            } else if cornerStyle == .circular {
                 return system.cornerRadius(forLength: min(rect.width, rect.height), cornerStyle: .rounded)
             } else {
+                let regularRadius = system.cornerRadius(forLength: min(rect.width, rect.height))
                 return max(40.0, (regularRadius - insetAmount) / 2.0)
             }
         }()
         let screenTrapezoidHexagonCornerOffset = max(44, rect.width/8)
         let replacableWidth: CGFloat = {
-            if system.screenShapeCase == .croppedCircle {
+            switch system.screenShapeCase {
+            case .croppedCircle:
                 return insetRect.width - screenTrapezoidHexagonCornerOffset*2.0
-            } else if system.screenShapeCase == .verticalHexagon || system.screenShapeCase == .horizontalHexagon {
+            case .verticalHexagon, .horizontalHexagon:
                 let riseOverRun = (insetRect.height/2) / screenTrapezoidHexagonCornerOffset
                 let angle = atan(riseOverRun)
                 let offset = cornerRadius * abs(tan(angle / 2.0))
                 return insetRect.width - (screenTrapezoidHexagonCornerOffset + offset)*2.0
-            } else if system.screenShapeCase == .trapezoid {
+            case .trapezoid:
                 let topSideLength = insetRect.width - screenTrapezoidHexagonCornerOffset*2
                 let topLeadingSpace = (insetRect.size.width - topSideLength)/2
                 let riseOverRun = insetRect.size.height / topLeadingSpace
                 let angle = atan(riseOverRun)
                 let topOffset = cornerRadius * abs(tan(angle / 2.0))
                 return insetRect.width - (screenTrapezoidHexagonCornerOffset + topOffset)*2.0
-            } else {
+            default:
                 return insetRect.width - cornerRadius*2.0
             }
         }()
@@ -561,9 +662,9 @@ final class SystemAppearance: ObservableObject {
         var bottomLeadingLengthBeforeCutout = totalLengthAroundCutout/2
         
         if 200 < totalLengthAroundCutout {
-            if system.getTopCutoutPosition() == .leading {
+            if system.getTopCutoutPosition(screenSize: UIScreen.main.bounds.size) == .leading {
                 topLeadingLengthBeforeCutout = totalLengthAroundCutout * 0.333333
-            } else if system.getTopCutoutPosition() == .trailing {
+            } else if system.getTopCutoutPosition(screenSize: UIScreen.main.bounds.size) == .trailing {
                 topLeadingLengthBeforeCutout = totalLengthAroundCutout * 0.666666
             }
             if system.bottomCutoutPosition == .leading {
@@ -581,8 +682,8 @@ final class SystemAppearance: ObservableObject {
         }
     }
     
-    func getTopCutoutPosition() -> CutoutPosition {
-        cameraNotchObscuresScreenShape(screenSize: UIScreen.main.bounds.size) ? .center : topCutoutPosition
+    func getTopCutoutPosition(screenSize: CGSize) -> CutoutPosition {
+        cameraNotchObscuresScreenShape(screenSize: screenSize) ? .center : topCutoutPosition
     }
     
     func reloadRootView() {

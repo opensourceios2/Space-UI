@@ -12,8 +12,8 @@ import GameplayKit
 public final class Lorem {
     
     /// Generates a single word.
-    public static func word() -> String {
-        return allWords.randomElement()!
+    public static func word(index: Int) -> String {
+        return allWords[(index) % allWords.count]
     }
     
     public static func word(random: GKRandom) -> String {
@@ -25,17 +25,17 @@ public final class Lorem {
     ///
     /// - Parameter count: The number of words to generate.
     /// - Returns: The generated words joined by a space character.
-    public static func words(_ count: Int) -> String {
-        return compose({ word() },
+    public static func words(index: Int, count: Int) -> String {
+        return compose({ word(index: index) },
                        count: count,
                        joinBy: .space)
     }
     
     /// Generates a single sentence.
-    public static var sentence: String {
+    public static func sentence(index: Int) -> String {
         let numberOfWords = Int.random(in: minWordsCountInSentence...maxWordsCountInSentence)
         
-        return compose({ word() },
+        return compose({ word(index: index) },
                        count: numberOfWords,
                        joinBy: .space,
                        endWith: .dot,
@@ -46,17 +46,17 @@ public final class Lorem {
     ///
     /// - Parameter count: The number of sentences to generate.
     /// - Returns: The generated sentences joined by a space character.
-    public static func sentences(_ count: Int) -> String {
-        return compose({ sentence },
+    public static func sentences(index: Int, count: Int) -> String {
+        return compose({ sentence(index: index) },
                        count: count,
                        joinBy: .space)
     }
     
     /// Generates a single paragraph.
-    public static var paragraph: String {
+    public static func paragraph(index: Int) -> String {
         let numberOfSentences = Int.random(in: minSentencesCountInParagraph...maxSentencesCountInParagraph)
         
-        return compose({ sentence },
+        return compose({ sentence(index: index) },
                        count: numberOfSentences,
                        joinBy: .space)
     }
@@ -65,40 +65,20 @@ public final class Lorem {
     ///
     /// - Parameter count: The number of paragraphs to generate.
     /// - Returns: The generated paragraphs joined by a space character.
-    public static func paragraphs(_ count: Int) -> String {
-        return compose({ paragraph },
+    public static func paragraphs(index: Int, count: Int) -> String {
+        return compose({ paragraph(index: index) },
                        count: count,
                        joinBy: .newLine)
     }
     
     /// Generates a single title.
-    public static var title: String {
+    public static func title(index: Int) -> String {
         let numberOfWords = Int.random(in: minWordsCountInTitle...maxWordsCountInTitle)
         
-        return compose({ word() },
+        return compose({ word(index: index) },
                        count: numberOfWords,
                        joinBy: .space,
                        decorate: { $0.capitalized })
-    }
-    
-    /// Generates a random tweet which is shorter than 140 characters.
-    public static var tweet: String {
-        var tweet = ""
-        
-        while tweet.count < tweetLength {
-            tweet += paragraph
-        }
-        
-        tweet = String(tweet.prefix(tweetLength - 1))
-        tweet = tweet.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        
-        if let lastCharacter = tweet.last {
-            if String(lastCharacter) != Separator.dot.rawValue {
-                tweet += Separator.dot.rawValue
-            }
-        }
-        
-        return tweet
     }
     
 }

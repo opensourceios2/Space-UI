@@ -12,6 +12,11 @@ struct ScreenShape: InsettableShape {
     
     static let cutoutHeight: CGFloat = 50.0
     
+    static func screenTrapezoidOrHexagonCornerOffset(screenSize: CGSize) -> CGFloat {
+        max(44, screenSize.width/8)
+    }
+    
+    var screenShapeCase: ScreenShapeCase
     var insetAmount: CGFloat = 0.0
     
     func cutoutPoints(style: CutoutStyle, length: CGFloat, cutoutHeight: CGFloat) -> [CGPoint] {
@@ -161,7 +166,7 @@ struct ScreenShape: InsettableShape {
     func path(in rect: CGRect) -> Path {
         let insetRect = rect.insetBy(dx: insetAmount, dy: insetAmount)
         
-        switch system.screenShapeCase {
+        switch screenShapeCase {
         case .circle:
             return Circle().path(in: insetRect)
         case .triangle:
@@ -174,7 +179,7 @@ struct ScreenShape: InsettableShape {
             let regularRadius = system.cornerRadius(forLength: min(rect.width, rect.height))
             if regularRadius.isZero {
                 return 0.0
-            } else if system.screenShapeCase == .capsule {
+            } else if screenShapeCase == .capsule {
                 return system.cornerRadius(forLength: min(insetRect.width, insetRect.height))
             } else if system.cornerStyle == .circular {
                 // Use rounded corner style instead
@@ -184,25 +189,25 @@ struct ScreenShape: InsettableShape {
                 return max(44.0, (regularRadius / 2.0)) - insetAmount * 2.0
             }
         }()
-        let screenTrapezoidHexagonCornerOffset = max(44, rect.width/8)
+        let screenTrapezoidOrHexagonCornerOffset = Self.screenTrapezoidOrHexagonCornerOffset(screenSize: rect.size)
         
         // Straight width that could be replaced by a cutout
         let replacableWidth: CGFloat = {
-            switch system.screenShapeCase {
+            switch screenShapeCase {
             case .croppedCircle:
-                return insetRect.width - screenTrapezoidHexagonCornerOffset*2.0
+                return insetRect.width - screenTrapezoidOrHexagonCornerOffset*2.0
             case .horizontalHexagon:
-                let riseOverRun = (insetRect.height/2) / screenTrapezoidHexagonCornerOffset
+                let riseOverRun = (insetRect.height/2) / screenTrapezoidOrHexagonCornerOffset
                 let angle = atan(riseOverRun)
                 let offset = cornerRadius * abs(tan(angle / 2.0))
-                return insetRect.width - (screenTrapezoidHexagonCornerOffset + offset)*2.0
+                return insetRect.width - (screenTrapezoidOrHexagonCornerOffset + offset)*2.0
             case .trapezoid:
-                let topSideLength = insetRect.width - screenTrapezoidHexagonCornerOffset*2
+                let topSideLength = insetRect.width - screenTrapezoidOrHexagonCornerOffset*2
                 let topLeadingSpace = (insetRect.width - topSideLength)/2
                 let riseOverRun = insetRect.height / topLeadingSpace
                 let angle = atan(riseOverRun)
                 let topOffset = cornerRadius * abs(tan(angle / 2.0))
-                return insetRect.width - (screenTrapezoidHexagonCornerOffset + topOffset)*2.0
+                return insetRect.width - (screenTrapezoidOrHexagonCornerOffset + topOffset)*2.0
             default:
                 return insetRect.width - cornerRadius*2.0
             }
@@ -210,8 +215,8 @@ struct ScreenShape: InsettableShape {
         
         // Straight height that could be replaced by a cutout
         let replacableHeight: CGFloat = {
-            if system.screenShapeCase == .croppedCircle {
-                return insetRect.height - screenTrapezoidHexagonCornerOffset*2.0
+            if screenShapeCase == .croppedCircle {
+                return insetRect.height - screenTrapezoidOrHexagonCornerOffset*2.0
             } else {
                 return insetRect.height - cornerRadius*2.0
             }
@@ -249,7 +254,7 @@ struct ScreenShape: InsettableShape {
         let bottomTrailingLengthAfterCutout: CGFloat
         
         if 200 < totalLengthAroundCutout {
-            switch system.getTopCutoutPosition() {
+            switch system.getTopCutoutPosition(screenSize: rect.size) {
             case .leading:
                 topLeadingLengthBeforeCutout = totalLengthAroundCutout * 0.333333
                 topTrailingLengthAfterCutout = totalLengthAroundCutout * 0.666666
@@ -282,25 +287,25 @@ struct ScreenShape: InsettableShape {
         return Path { path in
             // Start at bottom left and go counter-clockwise
             let startXOffset: CGFloat = {
-                switch system.screenShapeCase {
+                switch screenShapeCase {
                 case .croppedCircle:
                     if insetRect.width < insetRect.height {
                         return 0
                     } else {
-                        return screenTrapezoidHexagonCornerOffset
+                        return screenTrapezoidOrHexagonCornerOffset
                     }
                 case .verticalHexagon, .horizontalHexagon:
-                    let riseOverRun = (insetRect.height/2) / screenTrapezoidHexagonCornerOffset
+                    let riseOverRun = (insetRect.height/2) / screenTrapezoidOrHexagonCornerOffset
                     let angle = atan(riseOverRun)
                     let offset = cornerRadius * abs(tan(angle / 2.0))
-                    return screenTrapezoidHexagonCornerOffset + offset
+                    return screenTrapezoidOrHexagonCornerOffset + offset
                 case .trapezoid:
-                    let topSideLength = insetRect.width - screenTrapezoidHexagonCornerOffset*2
+                    let topSideLength = insetRect.width - screenTrapezoidOrHexagonCornerOffset*2
                     let topLeadingSpace = (insetRect.size.width - topSideLength)/2
                     let riseOverRun = insetRect.size.height / topLeadingSpace
                     let angle = atan(riseOverRun)
                     let topOffset = cornerRadius * abs(tan(angle / 2.0))
-                    return screenTrapezoidHexagonCornerOffset + topOffset
+                    return screenTrapezoidOrHexagonCornerOffset + topOffset
                 default:
                     return cornerRadius
                 }
@@ -309,7 +314,7 @@ struct ScreenShape: InsettableShape {
             path.move(to: point)
             
             let horizontalStraightLengthIsZero: Bool = {
-                switch system.screenShapeCase {
+                switch screenShapeCase {
                 case .verticalHexagon:
                     return true
                 case .croppedCircle, .capsule:
@@ -367,13 +372,11 @@ struct ScreenShape: InsettableShape {
             }
             
             // MARK: Right + Top + Left Sides
-            switch system.screenShapeCase {
+            switch screenShapeCase {
             case .verticalHexagon, .horizontalHexagon:
-                let forceVerticalHexagon: Bool = (insetRect.width < 500) && (insetRect.width < insetRect.height)
-                
                 // Rotate the rect so we only have to draw horizontal hexagon paths
                 let modifiedInsetRect: CGRect = {
-                    if system.screenShapeCase == .verticalHexagon || forceVerticalHexagon {
+                    if screenShapeCase == .verticalHexagon {
                         return CGRect(x: insetRect.origin.y, y: insetRect.origin.x, width: insetRect.height, height: insetRect.width)
                     } else {
                         return insetRect
@@ -381,15 +384,15 @@ struct ScreenShape: InsettableShape {
                 }()
                 
                 let sharpPoints = [
-                    CGPoint(x: modifiedInsetRect.maxX - screenTrapezoidHexagonCornerOffset, y: modifiedInsetRect.maxY),
+                    CGPoint(x: modifiedInsetRect.maxX - screenTrapezoidOrHexagonCornerOffset, y: modifiedInsetRect.maxY),
                     CGPoint(x: modifiedInsetRect.maxX, y: modifiedInsetRect.midY),
-                    CGPoint(x: modifiedInsetRect.maxX - screenTrapezoidHexagonCornerOffset, y: modifiedInsetRect.minY),
-                    CGPoint(x: modifiedInsetRect.minX + screenTrapezoidHexagonCornerOffset, y: modifiedInsetRect.minY),
+                    CGPoint(x: modifiedInsetRect.maxX - screenTrapezoidOrHexagonCornerOffset, y: modifiedInsetRect.minY),
+                    CGPoint(x: modifiedInsetRect.minX + screenTrapezoidOrHexagonCornerOffset, y: modifiedInsetRect.minY),
                     CGPoint(x: modifiedInsetRect.minX, y: modifiedInsetRect.midY),
-                    CGPoint(x: modifiedInsetRect.minX + screenTrapezoidHexagonCornerOffset, y: modifiedInsetRect.maxY)
+                    CGPoint(x: modifiedInsetRect.minX + screenTrapezoidOrHexagonCornerOffset, y: modifiedInsetRect.maxY)
                 ]
                 var points = [CGPoint]()
-                let riseOverRun = (modifiedInsetRect.height/2) / screenTrapezoidHexagonCornerOffset
+                let riseOverRun = (modifiedInsetRect.height/2) / screenTrapezoidOrHexagonCornerOffset
                 let angle = atan(riseOverRun)
                 let offset = cornerRadius * abs(tan(angle / 2.0))
                 
@@ -450,7 +453,7 @@ struct ScreenShape: InsettableShape {
                     points.append(sharpPoint5)
                 }
                 
-                if system.screenShapeCase == .verticalHexagon || forceVerticalHexagon {
+                if screenShapeCase == .verticalHexagon {
                     points = points.map({ CGPoint(x: $0.y, y: $0.x) }) // Rotate 90
                     path.move(to: points.last!)
                 }
@@ -461,7 +464,7 @@ struct ScreenShape: InsettableShape {
                         path.addArc(tangent1End: points.removeFirst(), tangent2End: points.removeFirst(), radius: cornerRadius)
                     }
                 }
-                if system.screenShapeCase == .horizontalHexagon && !forceVerticalHexagon {
+                if screenShapeCase == .horizontalHexagon {
                     addTopCutout(path: &path, point: &point, screenSize: rect.size, replacableWidth: replacableWidth, topTrailingLengthAfterCutout: topTrailingLengthAfterCutout, cutoutContentWidth: cutoutContentWidth, totalTransitionWidth: totalTransitionWidth, cutoutHeight: cutoutHeight, topLeadingLengthBeforeCutout: topLeadingLengthBeforeCutout)
                 }
                 for _ in 0..<3 {
@@ -471,7 +474,7 @@ struct ScreenShape: InsettableShape {
                     }
                 }
             case .trapezoid:
-                let topSideLength = insetRect.width - screenTrapezoidHexagonCornerOffset*2
+                let topSideLength = insetRect.width - screenTrapezoidOrHexagonCornerOffset*2
                 var points = Trapezoid().roundedTrapezoidPathPoints(in: insetRect, topSideLength: topSideLength, cornerRadius: cornerRadius)
                 
                 if system.shapeDirection == .down {
@@ -491,7 +494,7 @@ struct ScreenShape: InsettableShape {
                 }
                 if system.shapeDirection == .down {
                     point = path.currentPoint!
-                    point.x -= screenTrapezoidHexagonCornerOffset
+                    point.x -= screenTrapezoidOrHexagonCornerOffset
                     path.addLine(to: point)
                 }
                 addTopCutout(path: &path, point: &point, screenSize: rect.size, replacableWidth: replacableWidth, topTrailingLengthAfterCutout: topTrailingLengthAfterCutout, cutoutContentWidth: cutoutContentWidth, totalTransitionWidth: totalTransitionWidth, cutoutHeight: cutoutHeight, topLeadingLengthBeforeCutout: topLeadingLengthBeforeCutout)
@@ -508,37 +511,37 @@ struct ScreenShape: InsettableShape {
             case .croppedCircle:
                 if insetRect.height <= insetRect.width {
                     var c1a = point
-                    c1a.x += screenTrapezoidHexagonCornerOffset
+                    c1a.x += screenTrapezoidOrHexagonCornerOffset
                     point.y -= insetRect.height
                     var c2a = point
-                    c2a.x += screenTrapezoidHexagonCornerOffset
+                    c2a.x += screenTrapezoidOrHexagonCornerOffset
                     path.addCurve(to: point, control1: c1a, control2: c2a)
                     addTopCutout(path: &path, point: &point, screenSize: rect.size, replacableWidth: replacableWidth, topTrailingLengthAfterCutout: topTrailingLengthAfterCutout, cutoutContentWidth: cutoutContentWidth, totalTransitionWidth: totalTransitionWidth, cutoutHeight: cutoutHeight, topLeadingLengthBeforeCutout: topLeadingLengthBeforeCutout)
                     var c1b = point
-                    c1b.x -= screenTrapezoidHexagonCornerOffset
+                    c1b.x -= screenTrapezoidOrHexagonCornerOffset
                     point.y += insetRect.height
                     var c2b = point
-                    c2b.x -= screenTrapezoidHexagonCornerOffset
+                    c2b.x -= screenTrapezoidOrHexagonCornerOffset
                     path.addCurve(to: point, control1: c1b, control2: c2b)
                 } else {
-                    point.y -= screenTrapezoidHexagonCornerOffset
+                    point.y -= screenTrapezoidOrHexagonCornerOffset
                     path.move(to: point)
                     
                     var c1a = point
-                    c1a.y += screenTrapezoidHexagonCornerOffset
+                    c1a.y += screenTrapezoidOrHexagonCornerOffset
                     point.x += insetRect.width
                     var c2a = point
-                    c2a.y += screenTrapezoidHexagonCornerOffset
+                    c2a.y += screenTrapezoidOrHexagonCornerOffset
                     path.addCurve(to: point, control1: c1a, control2: c2a)
                     
                     point.y -= replacableHeight
                     path.addLine(to: point)
                     
                     var c1b = point
-                    c1b.y -= screenTrapezoidHexagonCornerOffset
+                    c1b.y -= screenTrapezoidOrHexagonCornerOffset
                     point.x -= insetRect.width
                     var c2b = point
-                    c2b.y -= screenTrapezoidHexagonCornerOffset
+                    c2b.y -= screenTrapezoidOrHexagonCornerOffset
                     path.addCurve(to: point, control1: c1b, control2: c2b)
                     
                     point.y += replacableHeight

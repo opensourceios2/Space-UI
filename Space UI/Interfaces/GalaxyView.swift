@@ -33,14 +33,14 @@ struct GalaxyView: View {
     @State var selectedID = 0
     @State var blackHoleAngle = Angle.zero
     @State var detailTexts = [
-        Lorem.word(),
-        Lorem.words(3),
-        Lorem.word(),
-        Lorem.word(),
-        Lorem.word()
+        Lorem.word(index: 1),
+        Lorem.words(index: 2, count: 3),
+        Lorem.word(index: 3),
+        Lorem.word(index: 4),
+        Lorem.word(index: 5)
     ]
-    @State var progress1: CGFloat = 0.0
-    @State var progress2: CGFloat = 0.0
+    @State var progress1: Double = 0.0
+    @State var progress2: Double = 0.0
     
     var body: some View {
         ZStack {
@@ -111,14 +111,14 @@ struct GalaxyView: View {
         AudioController.shared.play(.button)
         self.selectedID = id
         self.detailTexts = [
-            Lorem.word(),
-            Lorem.words(3),
-            Lorem.word(),
-            Lorem.word(),
-            Lorem.word()
+            Lorem.word(index: 6),
+            Lorem.words(index: 7, count: 3),
+            Lorem.word(index: 8),
+            Lorem.word(index: 9),
+            Lorem.word(index: 10)
         ]
-        self.progress1 = CGFloat.random(in: 0.1...1)
-        self.progress2 = CGFloat.random(in: 0.1...1)
+        self.progress1 = Double.random(in: 0.1...1)
+        self.progress2 = Double.random(in: 0.1...1)
     }
     
 }

@@ -76,6 +76,18 @@ struct BinaryView: View {
         }
     }
     
+    #if os(iOS)
+    @Environment(\.verticalSizeClass) private var vSizeClass
+    @Environment(\.horizontalSizeClass) private var hSizeClass
+    #endif
+    var maxDigits: Int {
+        #if os(tvOS) || targetEnvironment(macCatalyst)
+        return 6
+        #else
+        return (vSizeClass == .compact || hSizeClass == .compact) ? 4 : 5
+        #endif
+    }
+    
     // Styles
     var characterLength: CGFloat {
         switch system.basicShape {
@@ -103,7 +115,8 @@ struct BinaryView: View {
     var maxValue = 0
     var base = 2
     private var digits: [Int] {
-        Int.representation(of: value, inBase: base, withDigitCount: Int.numberOfDigits(for: maxValue, inBase: base))
+        let digitCount = (maxValue == 0) ? 6 : Int.numberOfDigits(for: maxValue, inBase: base)
+        return Array(Int.representation(of: value, inBase: base, withDigitCount: digitCount).prefix(maxDigits))
     }
     private var characters: [Character] {
         digits.enumerated().map({ Character(index: $0.offset, digitValue: $0.element) })
@@ -118,7 +131,7 @@ struct BinaryView: View {
                     .overlay {
                         if char.colors.border != nil {
                             AutoShape(direction: char.shapeDirection)
-                                .strokeBorder(Color(color: .primary, opacity: .max), lineWidth: 2)
+                                .strokeBorder(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
                                 .frame(width: characterLength, height: characterLength, alignment: .center)
                         }
                     }

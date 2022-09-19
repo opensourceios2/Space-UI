@@ -10,7 +10,8 @@ import SwiftUI
 
 struct UnlabeledKeypadView: View {
     
-    let solution: String = {
+    private let cellLength: CGFloat = 100
+    private let solution: String = {
         let chars = "abcdefghi"
         return String(chars.randomElement()!) + String(chars.randomElement()!) + String(chars.randomElement()!) + String(chars.randomElement()!)
     }()
@@ -26,41 +27,39 @@ struct UnlabeledKeypadView: View {
                 .font(Font.spaceFont(size: 40))
                 .foregroundColor(incorrectCodeEntered ? Color(color: .danger, opacity: .max) : nil)
             ZStack {
-                GridShape(rows: 3, columns: 3, outsideCornerRadius: system.cornerRadius(forLength: 100))
-                    .stroke(Color(color: .primary, opacity: .max), lineWidth: 2)
-                VStack(spacing: 0) {
-                    HStack(spacing: 0) {
+                GridShape(rows: 3, columns: 3, outsideCornerRadius: system.cornerRadius(forLength: cellLength))
+                    .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
+                Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                    GridRow {
                         makeButton(char: "a")
                         makeButton(char: "b")
                         makeButton(char: "c")
                     }
-                    HStack(spacing: 0) {
+                    GridRow {
                         makeButton(char: "d")
                         makeButton(char: "e")
                         makeButton(char: "f")
                     }
-                    HStack(spacing: 0) {
+                    GridRow {
                         makeButton(char: "g")
                         makeButton(char: "h")
                         makeButton(char: "i")
                     }
                 }
-                .clipShape(GridShape(rows: 3, columns: 3, outsideCornerRadius: system.cornerRadius(forLength: 100)))
+                .clipShape(GridShape(rows: 3, columns: 3, outsideCornerRadius: system.cornerRadius(forLength: cellLength)))
             }
-            .frame(width: 300, height: 300, alignment: .center)
+            .frame(width: cellLength * 3, height: cellLength * 3, alignment: .center)
         }
     }
     
     func makeButton(char: Character) -> some View {
-        return Button(action: {
+        Button {
             self.selectCell(char: char)
-        }) {
-            ZStack {
-                Rectangle()
-                .foregroundColor(.clear)
-            }
+        } label: {
+            EmptyView()
         }
-        .frame(width: 100, height: 100, alignment: .center)
+        .contentShape(Rectangle())
+        .frame(width: cellLength, height: cellLength, alignment: .center)
     }
     
     func selectCell(char: Character) {
@@ -72,7 +71,7 @@ struct UnlabeledKeypadView: View {
             ShipData.shared.endEmergency()
         } else if !keypadText.contains("*") {
             incorrectCodeEntered = true
-            Timer.scheduledTimer(withTimeInterval: 0.3, repeats: false) { (timer) in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 self.keypadText = "****"
                 self.incorrectCodeEntered = false
             }

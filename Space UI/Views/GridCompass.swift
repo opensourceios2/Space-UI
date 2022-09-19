@@ -10,13 +10,14 @@ import SwiftUI
 
 struct GridCompass: View {
     
-    @State var angle = Angle.zero
+    @StateObject private var anglePublisher = DoubleGenerator(range: -20...20)
     
     var body: some View {
         ZStack {
             GridShape(rows: 4, columns: 4, hasOutsideBorders: false)
-                .stroke(Color(color: .primary, opacity: .max), lineWidth: 2)
-                .rotationEffect(self.angle)
+                .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
+                .rotationEffect(.degrees(anglePublisher.value))
+                .animation(.easeInOut(duration: 1), value: anglePublisher.value)
             
             // Crosshairs
             Rectangle()
@@ -40,21 +41,14 @@ struct GridCompass: View {
                 .foregroundColor(Color(color: .primary, opacity: .max))
                 .frame(width: 30, height: 30)
             Triangle()
-                .stroke(Color(color: .primary, opacity: .min), lineWidth: 2)
+                .stroke(Color(color: .primary, opacity: .min), lineWidth: system.thinLineWidth)
                 .environment(\.shapeDirection, .up)
                 .frame(width: 30, height: 30)
             
             Circle()
-                .strokeBorder(Color(color: .primary, opacity: .max), lineWidth: 2)
+                .strokeBorder(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
         }
         .clipShape(Circle())
-        .task {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
-                withAnimation(Animation.easeInOut(duration: 1)) {
-                    self.angle = Angle(degrees: Double.random(in: -20...20))
-                }
-            }
-        }
     }
 }
 

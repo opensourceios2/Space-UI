@@ -72,12 +72,12 @@ struct PowerManagementView: View {
         }
         .overlay(alignment: .topLeading) {
             RandomWidget(random: random)
-                .frame(width: 100, height: 100)
+                .frame(maxWidth: 100, maxHeight: 100, alignment: .topLeading)
                 .offset(safeCornerOffsets.topLeading)
         }
         .overlay(alignment: .topTrailing) {
             RandomWidget(random: random)
-                .frame(width: 100, height: 100)
+                .frame(maxWidth: 100, maxHeight: 100, alignment: .topTrailing)
                 .offset(safeCornerOffsets.topTrailing)
         }
     }

@@ -29,7 +29,7 @@ struct SquadView: View {
             }
             AutoGrid(spacing: 16) {
                 ForEach(0..<8) { index in
-                    HStack {
+                    HStack(alignment: .bottom) {
                         Image("Helmet \(helmetNumber)")
                             .saturation(0)
                             .colorMultiply(Color(color: .primary, opacity: .max))
@@ -39,7 +39,6 @@ struct SquadView: View {
                                     .opacity(showingDeaths)
                             }
                         VStack {
-                            Spacer()
                             CircularSegmentedView()
                                 .frame(width: 50, height: 50)
                             Text(String(index + 1))

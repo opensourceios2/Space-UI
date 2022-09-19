@@ -52,7 +52,7 @@ struct NearbyShipsView: View {
                 }
                 if self.hasAxisLines {
                     AsteriskShape(lineEnds: self.axisLineEndCount)
-                        .stroke(Color(color: .primary, opacity: .high), lineWidth: 2)
+                        .stroke(Color(color: .primary, opacity: .high), lineWidth: system.thinLineWidth)
                 }
                 if self.hasTrianglePointers {
                     CircularStack {
@@ -64,7 +64,7 @@ struct NearbyShipsView: View {
                                     .rotationEffect(CircularStack.subviewRotationAngles(stepCount: trianglePointerCount)[index])
                             } else {
                                 Triangle(overrideDirection: .down)
-                                    .stroke(Color(color: .primary, opacity: .max), lineWidth: 2)
+                                    .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
                                     .frame(width: self.trianglePointerLength, height: self.trianglePointerLength, alignment: .center)
                                     .rotationEffect(CircularStack.subviewRotationAngles(stepCount: trianglePointerCount)[index])
                             }

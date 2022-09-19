@@ -61,6 +61,7 @@ struct DebugControls: View {
             })
                 .buttonStyle(FlexButtonStyle())
         }
+        .font(Font.system(size: 18, weight: .semibold, design: .rounded))
     }
 }
 

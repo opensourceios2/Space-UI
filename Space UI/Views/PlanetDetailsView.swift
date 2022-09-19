@@ -14,8 +14,8 @@ struct PlanetDetailsView: View {
     let monochromeLabels = Bool.random()
     
     @Binding var details: [String]
-    @Binding var progress1: CGFloat
-    @Binding var progress2: CGFloat
+    @Binding var progress1: Double
+    @Binding var progress2: Double
     
     var body: some View {
         HStack {
@@ -48,13 +48,13 @@ struct PlanetDetailsView: View {
             , alignment: .bottomTrailing)
             .background(Color(color: .primary, brightness: .low))
             .overlay(
-                RoundedRectangle(cornerRadius: 24)
-                    .strokeBorder(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: 4, lineCap: system.lineCap, dash: system.lineDash(lineWidth: 4)))
+                RoundedRectangle(cornerRadius: system.cornerStyle == .sharp ? 0 : 24)
+                    .strokeBorder(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: system.mediumLineWidth, lineCap: system.lineCap, dash: system.lineDash(lineWidth: system.mediumLineWidth)))
             )
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .clipShape(RoundedRectangle(cornerRadius: system.cornerStyle == .sharp ? 0 : 24))
             .onAppear() {
-                self.progress1 = CGFloat.random(in: 0.1...1)
-                self.progress2 = CGFloat.random(in: 0.1...1)
+                self.progress1 = Double.random(in: 0.1...1)
+                self.progress2 = Double.random(in: 0.1...1)
             }
     }
     

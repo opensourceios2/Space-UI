@@ -17,7 +17,7 @@ final class MusicController: ObservableObject {
     let systemPlayer = MPMusicPlayerController.systemMusicPlayer
     var cancellables: Set<AnyCancellable> = []
     
-    @Published var volume: CGFloat = 0.0
+    @Published var volume: Double = 0.0
     @Published var artwork: UIImage?
     @Published var isStarWarsMainTitleSoundtrack = false
     
@@ -44,7 +44,7 @@ final class MusicController: ObservableObject {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setActive(true)
-            volume = CGFloat(audioSession.outputVolume)
+            volume = Double(audioSession.outputVolume)
         } catch {
             print("Error Setting Up Audio Session")
         }
@@ -95,7 +95,7 @@ final class MusicController: ObservableObject {
         let audioSession = AVAudioSession.sharedInstance()
         do {
             try audioSession.setActive(true)
-            volume = CGFloat(audioSession.outputVolume)
+            volume = Double(audioSession.outputVolume)
         } catch {
             print("Error Setting Up Audio Session")
         }

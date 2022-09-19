@@ -69,11 +69,11 @@ struct OrbitsView: View {
     
     init() {
         orbits = [
-            Orbit(size: CGSize(width: 0.08, height: 0.10), currentAngle: CGFloat.random(in: -.pi ... .pi)/3),
-            Orbit(size: CGSize(width: 0.22, height: 0.22), currentAngle: CGFloat.random(in: -.pi ... .pi)/3),
-            Orbit(size: CGSize(width: 0.44, height: 0.31), currentAngle: CGFloat.random(in: -.pi ... .pi)/3),
-            Orbit(size: CGSize(width: 0.90, height: 0.48), currentAngle: CGFloat.random(in: -.pi ... .pi)/3),
-            Orbit(size: CGSize(width: 1.70, height: 0.85), currentAngle: CGFloat.random(in: -.pi ... .pi)/3)
+            Orbit(size: CGSize(width: 0.08, height: 0.10), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3),
+            Orbit(size: CGSize(width: 0.22, height: 0.22), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3),
+            Orbit(size: CGSize(width: 0.44, height: 0.31), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3),
+            Orbit(size: CGSize(width: 0.90, height: 0.48), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3),
+            Orbit(size: CGSize(width: 1.70, height: 0.85), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3)
         ]
     }
     
@@ -86,13 +86,13 @@ struct OrbitPlanetView: View {
             .foregroundColor(Color(color: .secondary, opacity: .max))
             .shadow(radius: 4)
             .overlay(
-                Text(Lorem.word())
+                Text(Lorem.word(index: 1))
                     .fixedSize()
                     .rotationEffect(Angle(degrees: 90), anchor: .bottomLeading)
                     .offset(x: 6, y: 10)
             , alignment: .bottomLeading)
             .overlay(
-                Text(Lorem.word())
+                Text(Lorem.word(index: 2))
                     .foregroundColor(Color(color: .tertiary, opacity: .max))
                     .fixedSize()
                     .offset(x: 35, y: 0)

@@ -12,33 +12,36 @@ import GameplayKit
 struct RandomWidget: View {
     
     enum Widget {
-        case circularProgressView(progress: CGFloat), circularSegmentedView, decorativePolygon, spirograph, almostThereNumberText(number: Int)
+        case circularProgressView, circularSegmentedView, decorativePolygon, spirograph, almostThereNumberText
     }
     
     @State var widget: Widget?
     @State var label: String
-    @State var progress: CGFloat = 0.0
+    @StateObject private var progress = DoubleGenerator(averageFrequency: 8)
+    @StateObject private var almostThereNumber = IntGenerator(range: 0...9999, averageFrequency: 8)
     
     var body: some View {
         switch widget {
-        case .circularProgressView(let newProgress):
-            CircularProgressView(value: self.$progress)
-                .overlay(Text(label).multilineTextAlignment(.center))
-                .onAppear() {
-                    self.progress = newProgress
-                }
+        case .circularProgressView:
+            CircularProgressView(value: self.$progress.value) {
+                Text(label)
+            }
         case .circularSegmentedView:
             CircularSegmentedView()
         case .decorativePolygon:
             DecorativePolygon(sides: 7)
-                .stroke(Color(color: .primary, opacity: system.colors.paletteStyle == .monochrome ? .low : .medium), lineWidth: 2)
-                .overlay(Text(label).multilineTextAlignment(.center))
+                .stroke(Color(color: .primary, opacity: system.colors.paletteStyle == .monochrome ? .low : .medium), lineWidth: system.thinLineWidth)
+                .overlay {
+                    Text(label).multilineTextAlignment(.center).padding(16)
+                }
         case .spirograph:
             Spirograph(innerRadius: 24, outerRadius: 43, distance: 34)
-                .stroke(Color(color: .primary, opacity: system.colors.paletteStyle == .monochrome ? .low : .max), lineWidth: 2)
-                .overlay(Text(label).multilineTextAlignment(.center))
-        case .almostThereNumberText(let number):
-            AlmostThereNumberText(number: number, digitCount: 4)
+                .stroke(Color(color: .primary, opacity: system.colors.paletteStyle == .monochrome ? .low : .max), lineWidth: system.thinLineWidth)
+                .overlay {
+                    Text(label).multilineTextAlignment(.center).padding(16)
+                }
+        case .almostThereNumberText:
+            AlmostThereNumberText(number: self.$almostThereNumber.value, digitCount: 4)
         default:
             EmptyView()
         }
@@ -48,7 +51,7 @@ struct RandomWidget: View {
         let widgetValue: Widget?
         switch random.nextInt(upperBound: 6) {
         case 0:
-            widgetValue = .circularProgressView(progress: CGFloat(random.nextDouble(in: 0.1...1)))
+            widgetValue = .circularProgressView
         case 1:
             widgetValue = .circularSegmentedView
         case 2:
@@ -56,7 +59,7 @@ struct RandomWidget: View {
         case 3:
             widgetValue = .spirograph
         case 4:
-            widgetValue = .almostThereNumberText(number: random.nextInt(upperBound: 9999))
+            widgetValue = .almostThereNumberText
         default:
             widgetValue = nil
         }

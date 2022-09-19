@@ -36,7 +36,7 @@ struct TargetingView: View {
                                     self.targetState.targetingSegment1.toggle()
                             }
                             PieSlice(deltaAngle: .pi/10, hasRadialLines: true)
-                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: 4, lineJoin: .round))
+                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: system.mediumLineWidth, lineJoin: .round))
                         }
                         .rotationEffect(Angle(degrees: -27), anchor: .bottom)
                         ZStack {
@@ -46,7 +46,7 @@ struct TargetingView: View {
                                     self.targetState.targetingSegment2.toggle()
                             }
                             PieSlice(deltaAngle: .pi/10, hasRadialLines: true)
-                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: 4, lineJoin: .round))
+                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: system.mediumLineWidth, lineJoin: .round))
                         }
                         .rotationEffect(Angle(degrees: -9), anchor: .bottom)
                         ZStack {
@@ -56,7 +56,7 @@ struct TargetingView: View {
                                     self.targetState.targetingSegment3.toggle()
                             }
                             PieSlice(deltaAngle: .pi/10, hasRadialLines: true)
-                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: 4, lineJoin: .round))
+                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: system.mediumLineWidth, lineJoin: .round))
                         }
                         .rotationEffect(Angle(degrees: 9), anchor: .bottom)
                         ZStack {
@@ -66,7 +66,7 @@ struct TargetingView: View {
                                     self.targetState.targetingSegment4.toggle()
                             }
                             PieSlice(deltaAngle: .pi/10, hasRadialLines: true)
-                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: 4, lineJoin: .round))
+                                .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: system.mediumLineWidth, lineJoin: .round))
                         }
                         .rotationEffect(Angle(degrees: 27), anchor: .bottom)
                     }

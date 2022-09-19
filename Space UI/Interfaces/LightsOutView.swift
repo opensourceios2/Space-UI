@@ -25,19 +25,19 @@ struct LightsOutView: View {
     var body: some View {
         ZStack {
             GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuView.buttonLength))
-                .stroke(Color(color: .primary, opacity: .max), lineWidth: 2)
-            VStack(spacing: 0) {
-                HStack(spacing: 0) {
+                .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
+            Grid(horizontalSpacing: 0, verticalSpacing: 0) {
+                GridRow {
                     makeButton(coord: GridCoord(row: 0, column: 0))
                     makeButton(coord: GridCoord(row: 0, column: 1))
                     makeButton(coord: GridCoord(row: 0, column: 2))
                 }
-                HStack(spacing: 0) {
+                GridRow {
                     makeButton(coord: GridCoord(row: 1, column: 0))
                     makeButton(coord: GridCoord(row: 1, column: 1))
                     makeButton(coord: GridCoord(row: 1, column: 2))
                 }
-                HStack(spacing: 0) {
+                GridRow {
                     makeButton(coord: GridCoord(row: 2, column: 0))
                     makeButton(coord: GridCoord(row: 2, column: 1))
                     makeButton(coord: GridCoord(row: 2, column: 2))

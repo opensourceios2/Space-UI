@@ -37,7 +37,7 @@ final class ShipData: ObservableObject {
     static let commandShipIconNames = (1...5).map({ "Cmd Ship \($0)" })
     static let starshipIconNames = (1...6).map({ "Starship \($0)" })
     
-    static let shared = ShipData()
+    static let shared = ShipData(seed: seed)
     
     // Misc
     let icon: Image
@@ -55,7 +55,7 @@ final class ShipData: ObservableObject {
     @Published var shieldAngle = 0.0
     @Published var weaponsInLaserMode = true
     
-    init() {
+    init(seed: UInt64) {
         var shipIcons = Self.starshipIconNames
         let shipIconIndex = shipIcons.indices.randomElement()!
         icon = Image(shipIcons.remove(at: shipIconIndex)).resizable()
@@ -66,7 +66,7 @@ final class ShipData: ObservableObject {
         bottomStatusState = StatusState(binary1: Int.random(in: 0...31), circleIconName1: CircleIcon.allCases.randomElement()!.rawValue, circleIconName2: CircleIcon.allCases.randomElement()!.rawValue, circleIconName3: CircleIcon.allCases.randomElement()!.rawValue, binary2: Int.random(in: 0...31))
         
         let random: GKRandom = {
-            let source = GKMersenneTwisterRandomSource(seed: system.seed)
+            let source = GKMersenneTwisterRandomSource(seed: seed)
             return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
         }()
         

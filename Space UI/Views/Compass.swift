@@ -10,14 +10,14 @@ import SwiftUI
 
 struct Compass: View {
     
-    @State var angle = Angle.zero
+    @StateObject private var anglePublisher = DoubleGenerator(range: -20...20)
     
     var body: some View {
         GeometryReader { geometry in
             ZStack {
                 // Outer Circles
                 Circle()
-                    .stroke(Color(color: .primary, opacity: .high), lineWidth: 2)
+                    .stroke(Color(color: .primary, opacity: .high), lineWidth: system.thinLineWidth)
                 Circle()
                     .stroke(Color(color: .primary, opacity: .max), style: StrokeStyle(lineWidth: 20, dash: [2, 9], dashPhase: 1))
                 Circle()
@@ -26,10 +26,10 @@ struct Compass: View {
                 // Crosshairs
                 Rectangle()
                     .foregroundColor(Color(color: .primary, opacity: .max))
-                    .frame(width: 2)
+                    .frame(width: system.thinLineWidth)
                 Rectangle()
                     .foregroundColor(Color(color: .primary, opacity: .max))
-                    .frame(height: 2)
+                    .frame(height: system.thinLineWidth)
                 
                 // Horizontal Tick Lines
                 HStack(spacing: 20) {
@@ -64,7 +64,7 @@ struct Compass: View {
                         .stroke(Color(color: .primary, opacity: .max), lineWidth: 1)
                         .frame(width: geometry.size.width * 0.25, height: geometry.size.height * 0.25)
                     Circle()
-                        .stroke(Color(color: .secondary, opacity: .max), lineWidth: 2)
+                        .stroke(Color(color: .secondary, opacity: .max), lineWidth: system.thinLineWidth)
                         .frame(width: geometry.size.width * 0.4, height: geometry.size.height * 0.4)
                     Circle()
                         .stroke(Color(color: .primary, opacity: .max), lineWidth: 1)
@@ -78,14 +78,8 @@ struct Compass: View {
             }
             .position(x: geometry.size.width/2, y: geometry.size.height/2)
         }
-        .rotationEffect(self.angle)
-        .task {
-            Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { (_) in
-                withAnimation(Animation.spring(response: 1, dampingFraction: 0.5, blendDuration: 0)) {
-                    self.angle = Angle(degrees: Double.random(in: -20...20))
-                }
-            }
-        }
+        .rotationEffect(.degrees(anglePublisher.value))
+        .animation(.spring(response: 1, dampingFraction: 0.5, blendDuration: 0), value: anglePublisher.value)
     }
 }
 

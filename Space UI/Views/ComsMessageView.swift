@@ -54,7 +54,7 @@ struct ComsMessageView: View {
                                 .frame(width: 16, height: 16, alignment: .leading)
                                 .foregroundColor(Color(color: .primary, opacity: .max))
                                 .overlay(AutoShape(direction: shapeDirection)
-                                            .stroke(Color(color: .primary, opacity: .min), lineWidth: 4.0)
+                                    .stroke(Color(color: .primary, opacity: .min), lineWidth: system.mediumLineWidth)
                                             .frame(width: 16, height: 16)
                                 )
                         }
@@ -78,6 +78,6 @@ struct ComsMessageView: View {
 
 struct ComsMessageView_Previews: PreviewProvider {
     static var previews: some View {
-        ComsMessageView(messageContent: .init(sender: "Tom", body: "Hello world", style: .regular))
+        ComsMessageView(messageContent: .init(index: 1))
     }
 }

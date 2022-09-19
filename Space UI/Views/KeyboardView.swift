@@ -46,7 +46,7 @@ struct KeyboardButtonStyle: ButtonStyle {
         .clipShape(KeyboardButtonShape())
         .overlay(
             KeyboardButtonShape()
-            .strokeBorder(Color(color: special ? .tertiary : .primary, opacity: disabled ? .medium : .max), lineWidth: 2)
+            .strokeBorder(Color(color: special ? .tertiary : .primary, opacity: disabled ? .medium : .max), lineWidth: system.thinLineWidth)
         )
         .opacity(configuration.isPressed ? 0.5 : 1.0)
     }
@@ -83,7 +83,7 @@ struct KeyboardView: View {
                     for i in 1...Int.random(in: 1...3) {
                         Timer.scheduledTimer(withTimeInterval: TimeInterval(i*30), repeats: false) { (_) in
                             AudioController.shared.play(.message)
-                            ShipData.shared.messagesState.addMessage(MessageContent.random())
+                            ShipData.shared.messagesState.addMessage(MessageContent(index: Int.random(in: 0...9999)))
                         }
                     }
                     self.string = ""
