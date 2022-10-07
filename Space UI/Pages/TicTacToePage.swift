@@ -1,5 +1,5 @@
 //
-//  GameView.swift
+//  TicTacToePage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -9,7 +9,7 @@
 import SwiftUI
 import JaydenCodeGenerator
 
-struct TicTacToeView: View {
+struct TicTacToePage: View {
     
     enum CellOwner {
         case player, opponent
@@ -26,7 +26,6 @@ struct TicTacToeView: View {
     
     let playerName = "YOU"
     let opponentName = "AI"
-    let monochromeLabels = Bool.random()
     
     @State var winLine: Line?
     @State var ticTacToeBoard: [[CellOwner?]] = [
@@ -77,8 +76,8 @@ struct TicTacToeView: View {
             }
                 .frame(width: 300, height: 300, alignment: .center)
             AutoStack {
-                TextPair(prefersMonochrome: monochromeLabels, label: playerName, value: "\(playerWins)", largerFontSize: 32)
-                TextPair(prefersMonochrome: monochromeLabels, label: opponentName, value: "\(opponentWins)", largerFontSize: 32)
+                TextPair(index: 0, label: playerName, value: "\(playerWins)", largerFontSize: 32)
+                TextPair(index: 0, label: opponentName, value: "\(opponentWins)", largerFontSize: 32)
                 if playerWins >= 10 {
                     Text("Secret Code: \(jaydenCode)")
                 }
@@ -86,6 +85,7 @@ struct TicTacToeView: View {
                 .frame(height: 60)
             Spacer()
         }
+        .frame(idealWidth: .infinity, maxWidth: .infinity)
     }
     
     func makeButton(coord: CellCoord) -> some View {
@@ -190,8 +190,8 @@ struct TicTacToeView: View {
     
 }
 
-struct GameView_Previews: PreviewProvider {
+struct TicTacToePage_Previews: PreviewProvider {
     static var previews: some View {
-        TicTacToeView()
+        TicTacToePage()
     }
 }

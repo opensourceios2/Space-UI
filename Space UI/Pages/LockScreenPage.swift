@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  LockScreenPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-10-04.
@@ -9,7 +9,7 @@
 import SwiftUI
 import GameplayKit
 
-struct LockScreenView: View {
+struct LockScreenPage: View {
     
     enum BrandNamePosition {
         case topCorner, centerRing
@@ -58,7 +58,7 @@ struct LockScreenView: View {
             VStack {
                 HStack {
                     if brandNamePosition == .topCorner {
-                        TextPair(label: shipManufacturer, value: shipName, largerFontSize: 28)
+                        TextPair(index: 0, label: shipManufacturer, value: shipName, largerFontSize: 28)
                             .offset(safeCornerOffsets.topLeading)
                     }
                     Spacer()
@@ -92,7 +92,7 @@ struct LockScreenView: View {
         }
         .overlay(alignment: .bottomLeading) {
             if hasCircularSegmentedView {
-                RandomWidget(random: random)
+                RandomWidget(index: 6)
                     .frame(maxWidth: 100, maxHeight: 100, alignment: .bottomLeading)
                     .offset(safeCornerOffsets.bottomLeading)
             }
@@ -132,6 +132,6 @@ struct LockScreenView: View {
 
 struct LockScreenView_Previews: PreviewProvider {
     static var previews: some View {
-        LockScreenView()
+        LockScreenPage()
     }
 }

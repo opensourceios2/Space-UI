@@ -35,10 +35,10 @@ struct DebugControls: View {
                 system = SystemAppearance(seed: UInt64(arc4random()))
                 DispatchQueue.main.async {
                     if debugShowingExternalDisplay {
-                        visibleInterface = savedInterface
+                        visiblePage = savedPage
                     } else {
-                        savedInterface = visibleInterface
-                        visibleInterface = .externalDisplay
+                        savedPage = visiblePage
+                        visiblePage = .externalDisplay
                     }
                     replaceRootView()
                     debugShowingExternalDisplay.toggle()

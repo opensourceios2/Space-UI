@@ -20,6 +20,8 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>This allows the app to sync with certain songs.</string>
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_hws-kb._udp</string>
@@ -37,13 +39,18 @@
 		<string>AurebeshDroid.ttf</string>
 		<string>AurebeshRacerAF-Fast.otf</string>
 		<string>BaybayinRounded.ttf</string>
+		<string>ClyneseBend.ttf</string>
 		<string>FresianAF.otf</string>
 		<string>Galactico.ttf</string>
+		<string>GeonosianPM.ttf</string>
+		<string>KyberCrystalDisplay.otf</string>
 		<string>MandoAF-Regular.otf</string>
+		<string>OuterRimAF.ttf</string>
 		<string>SFoil.otf</string>
 		<string>SGA2.ttf</string>
 		<string>TheCalling.ttf</string>
 		<string>TradeFederation.ttf</string>
+		<string>UmbaranST.otf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -53,7 +60,5 @@
 	</array>
 	<key>UIUserInterfaceStyle</key>
 	<string>Automatic</string>
-	<key>NSAppleMusicUsageDescription</key>
-	<string>This allows the app to sync with certain songs.</string>
 </dict>
 </plist>

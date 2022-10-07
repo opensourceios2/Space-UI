@@ -103,8 +103,8 @@ final class ShipData: ObservableObject {
         isInEmergency = true
         AudioController.shared.play(.alarmLoop)
         #if !os(tvOS)
-        savedInterface = visibleInterface
-        visibleInterface = {
+        savedPage = visiblePage
+        visiblePage = {
             switch Int.random(in: 0..<3) {
             case 0:
                 return .sudokuPuzzle
@@ -124,7 +124,7 @@ final class ShipData: ObservableObject {
         isInEmergency = false
         AudioController.shared.stopLoopingSound(.alarmLoop)
         #if !os(tvOS)
-        visibleInterface = savedInterface
+        visiblePage = savedPage
         #endif
         DispatchQueue.main.async {
             replaceRootView()

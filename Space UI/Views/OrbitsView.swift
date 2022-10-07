@@ -17,10 +17,6 @@ struct OrbitsView: View {
         let id = UUID()
     }
     
-    let random: GKRandom = {
-        let source = GKMersenneTwisterRandomSource(seed: system.seed)
-        return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
-    }()
     let orbits: [Orbit]
     
     @State var phase: CGFloat = 0.0
@@ -68,6 +64,10 @@ struct OrbitsView: View {
     }
     
     init() {
+        let random: GKRandom = {
+            let source = GKMersenneTwisterRandomSource(seed: system.seed)
+            return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
+        }()
         orbits = [
             Orbit(size: CGSize(width: 0.08, height: 0.10), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3),
             Orbit(size: CGSize(width: 0.22, height: 0.22), currentAngle: CGFloat(random.nextDouble(in: -.pi ... .pi))/3),

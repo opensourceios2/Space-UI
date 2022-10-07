@@ -13,11 +13,6 @@ struct AudioVisualizer: View {
     
     static let frameCount: Int32 = 150
     
-    let random: GKRandom = {
-        let source = GKMersenneTwisterRandomSource(seed: system.seed)
-        return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
-    }()
-    
     let barWidth: CGFloat
     let primaryBarsMaxHeight: CGFloat = 200.0
     let secondaryBarsMaxDifferance: CGFloat = 80.0

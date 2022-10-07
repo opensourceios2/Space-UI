@@ -1,5 +1,5 @@
 //
-//  TargetingView.swift
+//  TargetingPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct TargetingView: View {
+struct TargetingPage: View {
     
     @Environment(\.safeCornerOffsets) private var safeCornerOffsets
     @Environment(\.shapeDirection) private var shapeDirection: ShapeDirection
@@ -114,6 +114,6 @@ struct TargetingView: View {
 
 struct TargetingView_Previews: PreviewProvider {
     static var previews: some View {
-        TargetingView()
+        TargetingPage()
     }
 }

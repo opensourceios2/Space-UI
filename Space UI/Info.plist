@@ -43,13 +43,18 @@
 		<string>AurebeshDroid.ttf</string>
 		<string>AurebeshRacerAF-Fast.otf</string>
 		<string>BaybayinRounded.ttf</string>
+		<string>ClyneseBend.ttf</string>
 		<string>FresianAF.otf</string>
 		<string>Galactico.ttf</string>
+		<string>GeonosianPM.ttf</string>
+		<string>KyberCrystalDisplay.ttf</string>
 		<string>MandoAF-Regular.otf</string>
+		<string>OuterRimAF.ttf</string>
 		<string>SFoil.otf</string>
 		<string>SGA2.ttf</string>
 		<string>TheCalling.ttf</string>
 		<string>TradeFederation.ttf</string>
+		<string>UmbaranST.otf</string>
 	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>

@@ -13,13 +13,13 @@ struct NavigationButton<Label: View>: View {
     @Environment(\.shapeDirection) var shapeDirection: ShapeDirection
     
     let label: Label
-    var interface: Interface
+    var page: Page
     
     var body: some View {
         if system.preferedButtonSizingMode == .fixed {
             Button(action: {
                 AudioController.shared.play(.button)
-                visibleInterface = self.interface
+                visiblePage = self.page
                 NotificationCenter.default.post(name: NSNotification.Name("navigate"), object: nil)
             }, label: {
                 label
@@ -27,7 +27,7 @@ struct NavigationButton<Label: View>: View {
         } else {
             Button(action: {
                 AudioController.shared.play(.button)
-                visibleInterface = self.interface
+                visiblePage = self.page
                 NotificationCenter.default.post(name: NSNotification.Name("navigate"), object: nil)
             }, label: {
                 label
@@ -35,8 +35,8 @@ struct NavigationButton<Label: View>: View {
         }
     }
     
-    init(to interface: Interface, @ViewBuilder label: () -> Label) {
-        self.interface = interface
+    init(to page: Page, @ViewBuilder label: () -> Label) {
+        self.page = page
         self.label = label()
     }
 }

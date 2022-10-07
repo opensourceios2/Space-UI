@@ -1,5 +1,5 @@
 //
-//  SquadView.swift
+//  SquadPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2022-05-30.
@@ -9,7 +9,7 @@
 import SwiftUI
 import GameplayKit
 
-struct SquadView: View {
+struct SquadPage: View {
     
     let random: GKRandom = {
         let source = GKMersenneTwisterRandomSource(seed: system.seed)
@@ -69,8 +69,8 @@ struct SquadView: View {
     
 }
 
-struct SquadView_Previews: PreviewProvider {
+struct SquadPage_Previews: PreviewProvider {
     static var previews: some View {
-        SquadView()
+        SquadPage()
     }
 }

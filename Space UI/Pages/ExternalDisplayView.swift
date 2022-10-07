@@ -1,5 +1,5 @@
 //
-//  ExternalDisplayView.swift
+//  ExternalDisplayPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -24,12 +24,8 @@ struct AutoCompass: View {
     }
 }
 
-struct ExternalDisplayView: View {
+struct ExternalDisplayPage: View {
     
-    let random: GKRandom = {
-        let source = GKMersenneTwisterRandomSource(seed: system.seed)
-        return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
-    }()
     let has2textLists = Bool.random()
     let hasLongNumericalSection = Bool.random()
     let useGridCompassStyle = Bool.random()
@@ -74,6 +70,7 @@ struct ExternalDisplayView: View {
                                         Spacer()
                                         Text(Lorem.word(index: 38 + index))
                                     }
+                                    .lineLimit(1)
                                 }
                             }
                             EmptyView()
@@ -112,13 +109,13 @@ struct ExternalDisplayView: View {
                             }
                         }
                         HStack {
-                            RandomWidget(random: self.random)
+                            RandomWidget(index: 6)
                                 .frame(width: 120, height: 100)
                             VStack {
                                 BinaryView(value: 23)
                                 Text(Lorem.word(index: 6))
                             }
-                            RandomWidget(random: self.random)
+                            RandomWidget(index: 7)
                                 .frame(width: 120, height: 100)
                         }
                         HStack(spacing: 16) {
@@ -171,6 +168,7 @@ struct ExternalDisplayView: View {
                                 Spacer()
                                 Text(Lorem.word(index: 22 + index))
                             }
+                            .lineLimit(1)
                         }
                     }
                 }
@@ -191,8 +189,8 @@ struct ExternalDisplayView: View {
     }
 }
 
-struct ExternalDisplayView_Previews: PreviewProvider {
+struct ExternalDisplayPage_Previews: PreviewProvider {
     static var previews: some View {
-        ExternalDisplayView()
+        ExternalDisplayPage()
     }
 }

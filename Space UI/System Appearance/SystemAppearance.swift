@@ -39,7 +39,7 @@ enum ScreenFilter {
 enum Alignment {
     case none, vertical, horizontal
 }
-enum ScreenShapeCase: String {
+enum ScreenShapeCase: String, CaseIterable {
     case rectangle, capsule, circle, croppedCircle, verticalHexagon, horizontalHexagon, trapezoid, triangle
 }
 enum BasicShape {
@@ -152,8 +152,8 @@ final class SystemAppearance: ObservableObject {
         screenFilter = random.nextElement(in: [ScreenFilter.hLines, .vLines, .none])!
         
         let allScreenShapeCases: [WeightedDesignElement<ScreenShapeCase>] = [
-//            .init(baseWeight: 0.1, design: .init(simplicity: 1, sharpness: 0), element: .circle),
-//            .init(baseWeight: 0.1, design: .init(simplicity: 0.9, sharpness: 1), element: .triangle),
+            .init(baseWeight: 0.1, design: .init(simplicity: 1, sharpness: 0), element: .circle),
+            .init(baseWeight: 0.05, design: .init(simplicity: 0.9, sharpness: 1), element: .triangle),
             .init(baseWeight: 1, design: .init(simplicity: 0.9, sharpness: 0.1), element: .capsule),
             .init(baseWeight: 1, design: .init(simplicity: 0.5, sharpness: 0.2), element: .croppedCircle),
             .init(baseWeight: 1, design: .init(simplicity: 0.0, sharpness: 0.7), element: .verticalHexagon),
@@ -336,12 +336,17 @@ final class SystemAppearance: ObservableObject {
             .init(baseWeight: 1, design: .init(sharpness: 0.6, boldness: 0.8), element: .aurebeshRacerFast),
             .init(baseWeight: 4, design: .init(sharpness: 0.9, boldness: 0.5), element: .aurekBesh),
             .init(baseWeight: 1, design: .init(sharpness: 0.1, boldness: 0.4), element: .baybayin),
+            .init(baseWeight: 1, design: .init(sharpness: 0.9, boldness: 0.1), element: .clyneseBend),
             .init(baseWeight: 1, design: .init(sharpness: 0.6, boldness: 0.8), element: .fresian),
             .init(baseWeight: 2, design: .init(sharpness: 0.9, boldness: 0.6), element: .galactico),
+            .init(baseWeight: 1, design: .init(sharpness: 0.9, boldness: 0.1), element: .geonosian),
+            .init(baseWeight: 1, design: .init(sharpness: 0.6, boldness: 0.4), element: .kyberCrystal),
             .init(baseWeight: 1, design: .init(sharpness: 1.0, boldness: 0.2), element: .mando),
+            .init(baseWeight: 1, design: .init(sharpness: 0.8, boldness: 0.4), element: .outerRim),
             .init(baseWeight: 1, design: .init(sharpness: 0.7, boldness: 0.7), element: .sga2),
             .init(baseWeight: 1, design: .init(sharpness: 0.4, boldness: 0.0), element: .theCalling),
-            .init(baseWeight: 1, design: .init(sharpness: 0.3, boldness: 0.6), element: .tradeFederation)
+            .init(baseWeight: 1, design: .init(sharpness: 0.3, boldness: 0.6), element: .tradeFederation),
+            .init(baseWeight: 1, design: .init(simplicity: 1.0, sharpness: 0.0, boldness: 0.6), element: .umbaran)
         ]
         defaultFontName = random.nextWeightedElement(in: allFonts, with: design)!
         defaultFontSize = defaultFontName.defaultFontSize
@@ -431,8 +436,30 @@ final class SystemAppearance: ObservableObject {
     func mainContentInsets(screenSize: CGSize) -> EdgeInsets {
         let screenShapeCase = actualScreenShapeCase(screenSize: screenSize)
         
-        let topOnly = topCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
-        let bottomOnly = bottomCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
+        let topOnly = {
+            let cutoutOffset = topCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
+            let triangleOffset = {
+                guard screenShapeCase == .triangle else { return 0.0 }
+                if shapeDirection == .up {
+                    return min(screenSize.width, screenSize.height)*0.2
+                } else {
+                    return 0.0
+                }
+            }()
+            return cutoutOffset + triangleOffset
+        }()
+        let bottomOnly = {
+            let cutoutOffset = bottomCutoutStyle(screenSize: screenSize, availableWidth: screenSize.width, insetAmount: 0) == .none ? 0.0 : ScreenShape.cutoutHeight
+            let triangleOffset = {
+                guard screenShapeCase == .triangle else { return 0.0 }
+                if shapeDirection == .up {
+                    return 0.0
+                } else {
+                    return min(screenSize.width, screenSize.height)*0.2
+                }
+            }()
+            return cutoutOffset + triangleOffset
+        }()
         
         let borderInset = system.prefersBorders ? (system.thickLineWidth + system.borderInsetAmount) : 0
         
@@ -454,7 +481,9 @@ final class SystemAppearance: ObservableObject {
             case .croppedCircle:
                 let screenTrapezoidHexagonCornerOffset = ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) * 0.75
                 return screenSize.height <= screenSize.width ? 0.0 : screenTrapezoidHexagonCornerOffset
-            case .circle, .triangle:
+            case .circle:
+                return screenSize.height/2 - min(screenSize.width, screenSize.height)*0.4
+            case .triangle:
                 return screenSize.height/2 - min(screenSize.width, screenSize.height)*0.4
             default:
                 return 0.0
@@ -471,8 +500,10 @@ final class SystemAppearance: ObservableObject {
             case .croppedCircle:
                 let screenTrapezoidOrHexagonCornerOffset = ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) * 0.75
                 return screenSize.height <= screenSize.width ? screenTrapezoidOrHexagonCornerOffset : 0.0
-            case .circle, .triangle:
+            case .circle:
                 return screenSize.width/2 - min(screenSize.width, screenSize.height)*0.4
+            case .triangle:
+                return screenSize.width/2 - min(screenSize.width, screenSize.height)*0.3
             default:
                 return 0.0
             }
@@ -494,6 +525,18 @@ final class SystemAppearance: ObservableObject {
             default:
                 return system.screenShapeCase
             }
+        case .circle:
+            if screenSize.height < 500 || screenSize.width < 500 {
+                return .capsule
+            } else {
+                return .circle
+            }
+        case .triangle:
+            if screenSize.height < 500 || screenSize.width < 500 {
+                return .trapezoid
+            } else {
+                return .triangle
+            }
         default:
             return system.screenShapeCase
         }
@@ -503,8 +546,10 @@ final class SystemAppearance: ObservableObject {
     func safeCornerOffsets(screenSize: CGSize) -> SafeCornerOffsets {
         let cornerRadiusAvoidance: CGFloat = {
             switch actualScreenShapeCase(screenSize: screenSize) {
-            case .circle, .triangle, .capsule:
+            case .triangle, .capsule:
                 return 0.0
+            case .circle:
+                return min(screenSize.width, screenSize.height) / 24
             default:
                 return min(cornerRadius(forLength: 600)/8, (screenSize.width + screenSize.height) / 24)
             }
@@ -550,6 +595,25 @@ final class SystemAppearance: ObservableObject {
             topTrailing.width -= hexagonAvoidance
             bottomLeading.width += hexagonAvoidance
             bottomTrailing.width -= hexagonAvoidance
+        case .triangle:
+            let offset = min(screenSize.width, screenSize.height) / 12
+            if system.shapeDirection == .up {
+                topLeading.width += offset * 1.5
+                topTrailing.width -= offset * 1.5
+                bottomLeading.width -= offset
+                bottomTrailing.width += offset
+                
+                topLeading.height -= offset * 0.5
+                topTrailing.height -= offset * 0.5
+            } else {
+                topLeading.width -= offset
+                topTrailing.width += offset
+                bottomLeading.width += offset * 1.5
+                bottomTrailing.width -= offset * 1.5
+                
+                bottomLeading.height += offset * 0.5
+                bottomTrailing.height += offset * 0.5
+            }
         case .trapezoid:
             let offset = ScreenShape.screenTrapezoidOrHexagonCornerOffset(screenSize: screenSize) * 0.7
             if system.shapeDirection == .up {

@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-enum Interface {
+enum Page {
     case externalDisplay, lockScreen, seed, powerManagement, targeting, coms, nearby, planet, galaxy, ticTacToe, shield, squad, music, sudokuPuzzle, lightsOutPuzzle, unlabeledKeypadPuzzle
 }
 
@@ -18,7 +18,7 @@ struct RootView: View {
     
     @Environment(\.verticalSizeClass) private var vSizeClass
     
-    @State var interface: Interface
+    @State var currentPage: Page
     @State var showingDebugControls = true
     @ObservedObject var systemAppearance: SystemAppearance
     
@@ -29,39 +29,39 @@ struct RootView: View {
                     .padding(.horizontal, 20)
             }
             ScreenView {
-                switch interface {
+                switch currentPage {
                 case .externalDisplay:
-                    ExternalDisplayView()
+                    ExternalDisplayPage()
                 case .lockScreen:
-                    LockScreenView()
+                    LockScreenPage()
                 case .seed:
-                    SeedView()
+                    SeedPage()
                 case .powerManagement:
-                    PowerManagementView()
+                    PowerManagementPage()
                 case .targeting:
-                    TargetingView()
+                    TargetingPage()
                 case .coms:
-                    ComsView()
+                    ComsPage()
                 case .nearby:
-                    NearbyView()
+                    NearbyPage()
                 case .planet:
-                    PlanetView()
+                    PlanetPage()
                 case .galaxy:
-                    GalaxyView()
+                    GalaxyPage()
                 case .ticTacToe:
-                    TicTacToeView()
+                    TicTacToePage()
                 case .shield:
-                    ShieldView()
+                    ShieldPage()
                 case .squad:
-                    SquadView()
+                    SquadPage()
                 case .music:
-                    MusicView()
+                    MusicPage()
                 case .sudokuPuzzle:
-                    SudokuView()
+                    SudokuPage()
                 case .lightsOutPuzzle:
-                    LightsOutView()
+                    LightsOutPage()
                 case .unlabeledKeypadPuzzle:
-                    UnlabeledKeypadView()
+                    UnlabeledKeypadPage()
                 }
             }
             if vSizeClass == .regular, let segs = system.bottomMorseCodeSegments {
@@ -115,14 +115,14 @@ struct RootView: View {
         }
         #else
         .onTapGesture(count: 2, perform: {
-            visibleInterface = .seed
+            visiblePage = .seed
             NotificationCenter.default.post(name: NSNotification.Name("navigate"), object: nil)
         })
         #endif
         .environmentObject(system)
         .onReceive(NotificationCenter.default.publisher(for: Notification.Name("navigate"))) { _ in
             if !self.isExternal {
-                self.interface = visibleInterface
+                self.currentPage = visiblePage
             }
         }
     }
@@ -130,6 +130,6 @@ struct RootView: View {
 
 struct RootView_Previews: PreviewProvider {
     static var previews: some View {
-        RootView(isExternal: false, interface: .lockScreen, systemAppearance: system)
+        RootView(isExternal: false, currentPage: .lockScreen, systemAppearance: system)
     }
 }

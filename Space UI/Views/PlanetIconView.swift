@@ -1,5 +1,5 @@
 //
-//  SinglePlanetView.swift
+//  PlanetIconView.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2020-08-13.
@@ -8,11 +8,11 @@
 
 import SwiftUI
 
-struct SinglePlanetView: View {
+struct PlanetIconView: View {
     
     @Environment(\.shapeDirection) var shapeDirection: ShapeDirection
     
-    let planet: GalaxyView.Planet
+    let planet: GalaxyPage.Planet
     let shapeOverlayOnSelection: Bool
     
     @Binding var selectedID: Int
@@ -49,6 +49,6 @@ struct SinglePlanetView: View {
 
 struct SinglePlanetView_Previews: PreviewProvider {
     static var previews: some View {
-        SinglePlanetView(planet: GalaxyView.Planet(id: 10, coord: .zero, diameter: 20, isBlackHole: false, nebulaShapeNumber: nil, hasRing: true), shapeOverlayOnSelection: true, selectedID: .constant(5), sphereAnimationProgress: .constant(1.0))
+        PlanetIconView(planet: GalaxyPage.Planet(id: 10, coord: .zero, diameter: 20, isBlackHole: false, nebulaShapeNumber: nil, hasRing: true), shapeOverlayOnSelection: true, selectedID: .constant(5), sphereAnimationProgress: .constant(1.0))
     }
 }

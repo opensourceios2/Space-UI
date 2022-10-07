@@ -63,3 +63,54 @@ class DoubleGenerator: ObservableObject {
         }
     }
 }
+
+/// Generate ints in a sequence and allow SwiftUI to observe them
+class IntSequencer: ObservableObject {
+    
+    let frequency: TimeInterval
+    let maxValue: Int
+    
+    var isPlaying: Bool
+    private var timer: Timer?
+    
+    @Published var value: Int
+    
+    init(isPlaying: Bool = true, frequency: TimeInterval = 1, initialValue: Int = 0, maxValue: Int) {
+        self.isPlaying = isPlaying
+        self.frequency = frequency
+        self.value = initialValue
+        self.maxValue = maxValue
+        
+        if isPlaying {
+            startIncreasing()
+        }
+    }
+    
+    func startIncreasing() {
+        self.isPlaying = true
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(withTimeInterval: frequency, repeats: true, block: { _ in
+            if self.value == self.maxValue {
+                self.value = 0
+            } else {
+                self.value += 1
+            }
+        })
+    }
+    func startDecreasing() {
+        self.isPlaying = true
+        self.timer?.invalidate()
+        self.timer = Timer.scheduledTimer(withTimeInterval: frequency, repeats: true, block: { _ in
+            if self.value == 0 {
+                self.value = self.maxValue
+            } else {
+                self.value -= 1
+            }
+        })
+    }
+    
+    func stop() {
+        self.isPlaying = false
+        self.timer?.invalidate()
+    }
+}

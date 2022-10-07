@@ -1,5 +1,5 @@
 //
-//  SudokuView.swift
+//  SudokuPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2020-06-16.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct SudokuView: View {
+struct SudokuPage: View {
     
     enum CellContent: String {
         case a, b, c, d
@@ -27,7 +27,7 @@ struct SudokuView: View {
     
     var body: some View {
         ZStack {
-            GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuView.buttonLength))
+            GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuPage.buttonLength))
                 .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
             Grid(horizontalSpacing: 0, verticalSpacing: 0) {
                 GridRow {
@@ -55,9 +55,9 @@ struct SudokuView: View {
                     makeButton(coord: GridCoord(row: 3, column: 3))
                 }
             }
-            .clipShape(GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuView.buttonLength)))
+            .clipShape(GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuPage.buttonLength)))
         }
-        .frame(width: SudokuView.buttonLength * CGFloat(boardLength), height: SudokuView.buttonLength * CGFloat(boardLength), alignment: .center)
+        .frame(width: SudokuPage.buttonLength * CGFloat(boardLength), height: SudokuPage.buttonLength * CGFloat(boardLength), alignment: .center)
     }
     
     func makeButton(coord: GridCoord) -> some View {
@@ -74,7 +74,7 @@ struct SudokuView: View {
         }
         .foregroundColor(coord.row == coord.column ? nil : Color(color: .secondary, opacity: .max))
         .font(Font.spaceFont(size: 40))
-        .frame(width: SudokuView.buttonLength, height: SudokuView.buttonLength, alignment: .center)
+        .frame(width: SudokuPage.buttonLength, height: SudokuPage.buttonLength, alignment: .center)
     }
     
     func selectCell(coord: GridCoord) {
@@ -114,8 +114,8 @@ struct SudokuView: View {
     
 }
 
-struct SudokuView_Previews: PreviewProvider {
+struct SudokuPage_Previews: PreviewProvider {
     static var previews: some View {
-        SudokuView()
+        SudokuPage()
     }
 }

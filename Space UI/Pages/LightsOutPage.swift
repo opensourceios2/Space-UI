@@ -1,5 +1,5 @@
 //
-//  LightsOutView.swift
+//  LightsOutPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2020-09-05.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct LightsOutView: View {
+struct LightsOutPage: View {
     
     static let buttonLength: CGFloat = 100.0
     
@@ -24,7 +24,7 @@ struct LightsOutView: View {
     
     var body: some View {
         ZStack {
-            GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuView.buttonLength))
+            GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuPage.buttonLength))
                 .stroke(Color(color: .primary, opacity: .max), lineWidth: system.thinLineWidth)
             Grid(horizontalSpacing: 0, verticalSpacing: 0) {
                 GridRow {
@@ -43,9 +43,9 @@ struct LightsOutView: View {
                     makeButton(coord: GridCoord(row: 2, column: 2))
                 }
             }
-            .clipShape(GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuView.buttonLength)))
+            .clipShape(GridShape(rows: boardLength, columns: boardLength, outsideCornerRadius: system.cornerRadius(forLength: SudokuPage.buttonLength)))
         }
-        .frame(width: SudokuView.buttonLength * CGFloat(boardLength), height: SudokuView.buttonLength * CGFloat(boardLength), alignment: .center)
+        .frame(width: SudokuPage.buttonLength * CGFloat(boardLength), height: SudokuPage.buttonLength * CGFloat(boardLength), alignment: .center)
     }
     
     func makeButton(coord: GridCoord) -> some View {
@@ -63,7 +63,7 @@ struct LightsOutView: View {
             }
         }
         .font(Font.spaceFont(size: 40))
-        .frame(width: SudokuView.buttonLength, height: SudokuView.buttonLength, alignment: .center)
+        .frame(width: SudokuPage.buttonLength, height: SudokuPage.buttonLength, alignment: .center)
     }
     
     func selectCell(coord: GridCoord) {
@@ -92,8 +92,8 @@ struct LightsOutView: View {
     
 }
 
-struct LightsOutView_Previews: PreviewProvider {
+struct LightsOutPage_Previews: PreviewProvider {
     static var previews: some View {
-        LightsOutView()
+        LightsOutPage()
     }
 }

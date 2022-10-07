@@ -1,5 +1,5 @@
 //
-//  NearbyView.swift
+//  NearbyPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -9,7 +9,7 @@
 import SwiftUI
 import GameplayKit
 
-struct NearbyView: View {
+struct NearbyPage: View {
     
     let random: GKRandom = {
         let source = GKMersenneTwisterRandomSource(seed: system.seed)
@@ -37,12 +37,12 @@ struct NearbyView: View {
             }
         }
         .overlay(alignment: .topLeading) {
-            RandomWidget(random: random)
+            RandomWidget(index: 1)
                 .frame(maxWidth: 100, maxHeight: 100, alignment: .topLeading)
                 .offset(safeCornerOffsets.topLeading)
         }
         .overlay(alignment: .topTrailing) {
-            RandomWidget(random: random)
+            RandomWidget(index: 2)
                 .frame(maxWidth: 100, maxHeight: 100, alignment: .topTrailing)
                 .offset(safeCornerOffsets.topTrailing)
         }
@@ -51,6 +51,6 @@ struct NearbyView: View {
 
 struct NearbyView_Previews: PreviewProvider {
     static var previews: some View {
-        NearbyView()
+        NearbyPage()
     }
 }

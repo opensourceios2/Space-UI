@@ -8,9 +8,9 @@
 
 import SwiftUI
 
-var visibleInterface = Interface.externalDisplay
+var visiblePage = Page.externalDisplay
 
-enum Interface {
+enum Page {
     case externalDisplay, lockScreen, seed, powerManagement, targeting, coms, nearby, planet, galaxy, ticTacToe, shield, music
 }
 
@@ -36,7 +36,7 @@ struct RootView: View {
         DisplayOrientation(rawValue: displayOrientationRawValue) ?? .default
     }
     
-    @State var interface: Interface
+    @State var currentPage: Page
     @State var showSeedView = false
     @ObservedObject var systemAppearance: SystemAppearance
     
@@ -45,7 +45,7 @@ struct RootView: View {
             ExternalDisplayView()
         }
         .sheet(isPresented: self.$showSeedView) {
-            SeedView()
+            SeedPage()
         }
         .ignoresSafeArea()
         .frame(width: displayOrientation == .default ? 1920 : 1080, height: displayOrientation == .default ? 1080 : 1920)
@@ -61,6 +61,6 @@ struct RootView: View {
 
 struct RootView_Previews: PreviewProvider {
     static var previews: some View {
-        RootView(interface: .externalDisplay, systemAppearance: system)
+        RootView(currentPage: .externalDisplay, systemAppearance: system)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  ShieldView.swift
+//  ShieldPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -9,18 +9,13 @@
 import SwiftUI
 import GameplayKit
 
-struct ShieldView: View {
+struct ShieldPage: View {
     
-    let random: GKRandom = {
-        let source = GKMersenneTwisterRandomSource(seed: system.seed)
-        return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
-    }()
-    
-    let word1: String
-    let word2: String
-    let word3: String
-    let word4: String
-    let word5: String
+    let word1 = Lorem.word(index: 1)
+    let word2 = Lorem.word(index: 2)
+    let word3 = Lorem.word(index: 3)
+    let word4 = Lorem.word(index: 4)
+    let word5 = Lorem.word(index: 5)
     
     @Environment(\.safeCornerOffsets) private var safeCornerOffsets
     
@@ -46,7 +41,7 @@ struct ShieldView: View {
                 }
             , alignment: .top)
             .overlay(alignment: .topLeading) {
-                RandomWidget(random: random)
+                RandomWidget(index: 1)
                     .frame(width: 100, height: 100, alignment: .topLeading)
                     .offset(safeCornerOffsets.topLeading)
             }
@@ -94,19 +89,10 @@ struct ShieldView: View {
             }
         }
     }
-    
-    init() {
-        word1 = Lorem.word(random: random)
-        word2 = Lorem.word(random: random)
-        word3 = Lorem.word(random: random)
-        word4 = Lorem.word(random: random)
-        word5 = Lorem.word(random: random)
-    }
-    
 }
 
-struct ShieldView_Previews: PreviewProvider {
+struct ShieldPage_Previews: PreviewProvider {
     static var previews: some View {
-        ShieldView()
+        ShieldPage()
     }
 }

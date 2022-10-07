@@ -1,5 +1,5 @@
 //
-//  PowerManagementView.swift
+//  PowerManagementPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -9,12 +9,8 @@
 import SwiftUI
 import GameplayKit
 
-struct PowerManagementView: View {
+struct PowerManagementPage: View {
     
-    let random: GKRandom = {
-        let source = GKMersenneTwisterRandomSource(seed: system.seed)
-        return GKRandomDistribution(randomSource: source, lowestValue: 0, highestValue: Int.max)
-    }()
     let model: String = {
         let seedInt = Int(system.seed)
         let alphaNum = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -71,12 +67,12 @@ struct PowerManagementView: View {
             .position(x: geometry.size.width/2, y: geometry.size.height/2)
         }
         .overlay(alignment: .topLeading) {
-            RandomWidget(random: random)
+            RandomWidget(index: 1)
                 .frame(maxWidth: 100, maxHeight: 100, alignment: .topLeading)
                 .offset(safeCornerOffsets.topLeading)
         }
         .overlay(alignment: .topTrailing) {
-            RandomWidget(random: random)
+            RandomWidget(index: 2)
                 .frame(maxWidth: 100, maxHeight: 100, alignment: .topTrailing)
                 .offset(safeCornerOffsets.topTrailing)
         }
@@ -85,6 +81,6 @@ struct PowerManagementView: View {
 
 struct PowerManagementView_Previews: PreviewProvider {
     static var previews: some View {
-        PowerManagementView()
+        PowerManagementPage()
     }
 }

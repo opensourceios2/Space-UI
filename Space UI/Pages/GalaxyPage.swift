@@ -1,5 +1,5 @@
 //
-//  GalaxyView.swift
+//  GalaxyPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -9,7 +9,7 @@
 import SwiftUI
 import GameplayKit
 
-struct GalaxyView: View {
+struct GalaxyPage: View {
     
     struct Planet: Identifiable {
         let id: Int
@@ -56,7 +56,7 @@ struct GalaxyView: View {
                         .rotationEffect(self.blackHoleAngle)
                         .offset(x: planet.coord.x, y: planet.coord.y)
                 } else {
-                    SinglePlanetView(planet: planet, shapeOverlayOnSelection: shapeOverlayOnSelection, selectedID: self.$selectedID, sphereAnimationProgress: self.$sphereAnimationProgress)
+                    PlanetIconView(planet: planet, shapeOverlayOnSelection: shapeOverlayOnSelection, selectedID: self.$selectedID, sphereAnimationProgress: self.$sphereAnimationProgress)
                         .onTapGesture {
                             self.selectPlanet(id: planet.id)
                         }
@@ -123,8 +123,8 @@ struct GalaxyView: View {
     
 }
 
-struct GalaxyView_Previews: PreviewProvider {
+struct GalaxyPage_Previews: PreviewProvider {
     static var previews: some View {
-        GalaxyView()
+        GalaxyPage()
     }
 }

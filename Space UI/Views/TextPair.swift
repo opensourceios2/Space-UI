@@ -10,7 +10,10 @@ import SwiftUI
 
 struct TextPair: View {
     
-    var prefersMonochrome: Bool = Bool.random()
+    var index: Int = Int.random(in: 0..<Int.max)
+    var prefersMonochrome: Bool {
+        (Int(system.seed) + index) % 2 == 0
+    }
     var monochrome: Bool {
         prefersMonochrome || system.colors.paletteStyle == .monochrome
     }
@@ -33,6 +36,6 @@ struct TextPair: View {
 
 struct TextPair_Previews: PreviewProvider {
     static var previews: some View {
-        TextPair(prefersMonochrome: Bool.random(), label: "Name", value: "Steve")
+        TextPair(index: 0, label: "Name", value: "Steve")
     }
 }

@@ -19,13 +19,18 @@ extension Font {
         case aurebeshDroid = "Aurebesh_droid-Regular"
         case aurebeshRacerFast = "AurebeshRacerAF-Fast"
         case baybayin = "Baybayin Rounded Regular"
+        case clyneseBend = "ClyneseBend"
         case fresian = "FresianAlphabetAF"
         case galactico = "Galactico"
+        case geonosian = "GeonosianPM"
+        case kyberCrystal = "KyberCrystalDisplay"
         case mando = "MandoAF-Regular"
+        case outerRim = "OuterRimAF-Regular"
         case sFoil = "S-Foil"
         case sga2 = "SGA2"
         case theCalling = "TheCalling"
         case tradeFederation = "Trade Federation"
+        case umbaran = "UmbaranST-Regular"
         
         var defaultFontSize: CGFloat {
             let fontFamilySize: CGFloat = {
@@ -46,12 +51,20 @@ extension Font {
                     return 24.0
                 case .baybayin:
                     return 20.0
+                case .clyneseBend:
+                    return 22.0
                 case .fresian:
                     return 20.0
                 case .galactico:
                     return 20.0
+                case .geonosian:
+                    return 40.0
+                case .kyberCrystal:
+                    return 22.0
                 case .mando:
                     return 28.0
+                case .outerRim:
+                    return 30.0
                 case .sFoil:
                     return 20.0
                 case .sga2:
@@ -60,6 +73,8 @@ extension Font {
                     return 24.0
                 case .tradeFederation:
                     return 17.0
+                case .umbaran:
+                    return 36.0
 //                default:
 //                    return 20.0
                 }

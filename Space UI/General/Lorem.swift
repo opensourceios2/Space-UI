@@ -27,8 +27,7 @@ public final class Lorem {
     /// - Returns: The generated words joined by a space character.
     public static func words(index: Int, count: Int) -> String {
         return compose({ word(index: index) },
-                       count: count,
-                       joinBy: .space)
+                       count: count)
     }
     
     /// Generates a single sentence.
@@ -36,49 +35,7 @@ public final class Lorem {
         let numberOfWords = Int.random(in: minWordsCountInSentence...maxWordsCountInSentence)
         
         return compose({ word(index: index) },
-                       count: numberOfWords,
-                       joinBy: .space,
-                       endWith: .dot,
-                       decorate: { $0.firstLetterCapitalized() })
-    }
-    
-    /// Generates multiple sentences whose count is defined by the given value.
-    ///
-    /// - Parameter count: The number of sentences to generate.
-    /// - Returns: The generated sentences joined by a space character.
-    public static func sentences(index: Int, count: Int) -> String {
-        return compose({ sentence(index: index) },
-                       count: count,
-                       joinBy: .space)
-    }
-    
-    /// Generates a single paragraph.
-    public static func paragraph(index: Int) -> String {
-        let numberOfSentences = Int.random(in: minSentencesCountInParagraph...maxSentencesCountInParagraph)
-        
-        return compose({ sentence(index: index) },
-                       count: numberOfSentences,
-                       joinBy: .space)
-    }
-    
-    /// Generates multiple paragraphs whose count is defined by the given value.
-    ///
-    /// - Parameter count: The number of paragraphs to generate.
-    /// - Returns: The generated paragraphs joined by a space character.
-    public static func paragraphs(index: Int, count: Int) -> String {
-        return compose({ paragraph(index: index) },
-                       count: count,
-                       joinBy: .newLine)
-    }
-    
-    /// Generates a single title.
-    public static func title(index: Int) -> String {
-        let numberOfWords = Int.random(in: minWordsCountInTitle...maxWordsCountInTitle)
-        
-        return compose({ word(index: index) },
-                       count: numberOfWords,
-                       joinBy: .space,
-                       decorate: { $0.capitalized })
+                       count: numberOfWords)
     }
     
 }
@@ -92,25 +49,13 @@ fileprivate extension Lorem {
         case newLine = "\n"
     }
     
-    static func compose(_ provider: () -> String,
-                                    count: Int,
-                                    joinBy middleSeparator: Separator,
-                                    endWith endSeparator: Separator = .none,
-                                    decorate decorator: ((String) -> String)? = nil) -> String {
+    static func compose(_ provider: () -> String, count: Int) -> String {
         var string = ""
         
         for index in 0..<count {
             string += provider()
             
-            if (index < count - 1) {
-                string += middleSeparator.rawValue
-            } else {
-                string += endSeparator.rawValue
-            }
-        }
-        
-        if let decorator = decorator {
-            string = decorator(string)
+            string += " "
         }
         
         return string

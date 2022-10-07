@@ -20,6 +20,8 @@ struct AutoGrid: Layout {
     }
     
     var spacing: CGFloat = 20
+    
+    /// Allows the grid to layout in a size larger than the proposal
     var ignoreMaxSize: Bool = true
     
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
@@ -31,6 +33,7 @@ struct AutoGrid: Layout {
     func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
         let avgSubviewSize = avgSubviewSize(subviews)
         let proposedGridAndSize = proposedGridAndSize(proposal: proposal, subviews: subviews, avgSubviewSize: avgSubviewSize)
+        
         let firstSubviewPoint = CGPoint(
             x: bounds.midX - proposedGridAndSize.size.width/2 + avgSubviewSize.width/2,
             y: bounds.midY - proposedGridAndSize.size.height/2 + avgSubviewSize.height/2)

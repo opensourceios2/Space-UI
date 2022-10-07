@@ -7,7 +7,6 @@
 //
 
 import SwiftUI
-import GameplayKit
 
 struct RandomWidget: View {
     
@@ -18,7 +17,7 @@ struct RandomWidget: View {
     @State var widget: Widget?
     @State var label: String
     @StateObject private var progress = DoubleGenerator(averageFrequency: 8)
-    @StateObject private var almostThereNumber = IntGenerator(range: 0...9999, averageFrequency: 8)
+    @StateObject private var almostThereNumber = IntSequencer(frequency: TimeInterval.random(in: 0.1...5.0), initialValue: Int.random(in: 0...9999), maxValue: 9999)
     
     var body: some View {
         switch widget {
@@ -47,9 +46,9 @@ struct RandomWidget: View {
         }
     }
     
-    init(random: GKRandom) {
+    init(index: Int) {
         let widgetValue: Widget?
-        switch random.nextInt(upperBound: 6) {
+        switch (Int(system.seed) + index) % 6 {
         case 0:
             widgetValue = .circularProgressView
         case 1:
@@ -64,13 +63,13 @@ struct RandomWidget: View {
             widgetValue = nil
         }
         _widget = State(initialValue: widgetValue)
-        _label = State(initialValue: Lorem.word(random: random))
+        _label = State(initialValue: Lorem.word(index: index + 27))
     }
     
 }
 
 struct RandomWidget_Previews: PreviewProvider {
     static var previews: some View {
-        RandomWidget(random: GKRandomDistribution())
+        RandomWidget(index: 0)
     }
 }

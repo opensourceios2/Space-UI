@@ -170,7 +170,7 @@ struct ScreenShape: InsettableShape {
         case .circle:
             return Circle().path(in: insetRect)
         case .triangle:
-            return Triangle().path(in: insetRect)
+            return Triangle(overrideDirection: system.shapeDirection).path(in: insetRect)
         default:
             break
         }

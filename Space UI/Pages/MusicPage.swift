@@ -1,5 +1,5 @@
 //
-//  MusicView.swift
+//  MusicPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -10,7 +10,7 @@ import SwiftUI
 import AVKit
 import GameplayKit
 
-struct MusicView: View {
+struct MusicPage: View {
     
     @Environment(\.shapeDirection) var shapeDirection: ShapeDirection
     
@@ -43,35 +43,39 @@ struct MusicView: View {
             }
             Spacer()
             HStack {
-                Button(action: {
+                Button {
                     AudioController.shared.play(.action)
                     self.music.skipToPrevious()
-                }, label: {
+                } label: {
                     Image(systemName: "circle.lefthalf.fill")
-                }).buttonStyle(GroupedButtonStyle(segmentPosition: .leading))
-                Button(action: {
+                }
+                .buttonStyle(GroupedButtonStyle(segmentPosition: .leading))
+                Button {
                     AudioController.shared.play(.action)
                     self.music.playPause()
-                }, label: {
+                } label: {
                     Image(systemName: "circle")
-                }).buttonStyle(GroupedButtonStyle(segmentPosition: .middle, isSelected: self.music.isPlaying))
-                Button(action: {
+                }
+                .buttonStyle(GroupedButtonStyle(segmentPosition: .middle, isSelected: self.music.isPlaying))
+                Button {
                     AudioController.shared.play(.action)
                     self.music.skipToNext()
-                }, label: {
+                } label: {
                     Image(systemName: "circle.righthalf.fill")
-                }).buttonStyle(GroupedButtonStyle(segmentPosition: .trailing))
+                }
+                .buttonStyle(GroupedButtonStyle(segmentPosition: .trailing))
             }
             HStack {
                 CircularProgressView(value: $music.volume)
                     .frame(maxWidth: 80, maxHeight: 80)
                     .padding()
-                Button(action: {
+                Button {
                     AudioController.shared.play(.action)
                     self.music.toggleRepeat()
-                }, label: {
+                } label: {
                     Text("Repeat")
-                }).buttonStyle(ShapeButtonStyle(shapeDirection: shapeDirection, isSelected: !(self.music.systemPlayer.repeatMode == .none)))
+                }
+                .buttonStyle(ShapeButtonStyle(shapeDirection: shapeDirection, isSelected: !(self.music.systemPlayer.repeatMode == .none)))
             }
         }
     }
@@ -85,8 +89,8 @@ struct MusicView: View {
     }
 }
 
-struct MusicView_Previews: PreviewProvider {
+struct MusicPage_Previews: PreviewProvider {
     static var previews: some View {
-        MusicView()
+        MusicPage()
     }
 }

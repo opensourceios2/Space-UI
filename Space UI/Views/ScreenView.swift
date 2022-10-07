@@ -46,6 +46,32 @@ struct ScreenView<Content: View>: View {
     var body: some View {
         GeometryReader { geometry in
             self.content
+//                #if DEBUG
+//                .overlay {
+//                    Rectangle()
+//                        .strokeBorder(Color.white, lineWidth: 1)
+//                }
+//                .overlay(alignment: .topLeading) {
+//                    Color.white
+//                        .frame(width: 5, height: 5)
+//                        .offset(system.safeCornerOffsets(screenSize: geometry.size).topLeading)
+//                }
+//                .overlay(alignment: .topTrailing) {
+//                    Color.white
+//                        .frame(width: 5, height: 5)
+//                        .offset(system.safeCornerOffsets(screenSize: geometry.size).topTrailing)
+//                }
+//                .overlay(alignment: .bottomLeading) {
+//                    Color.white
+//                        .frame(width: 5, height: 5)
+//                        .offset(system.safeCornerOffsets(screenSize: geometry.size).bottomLeading)
+//                }
+//                .overlay(alignment: .bottomTrailing) {
+//                    Color.white
+//                        .frame(width: 5, height: 5)
+//                        .offset(system.safeCornerOffsets(screenSize: geometry.size).bottomTrailing)
+//                }
+//                #endif
                 .padding(system.mainContentInsets(screenSize: geometry.size))
                 .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity)
                 .background {

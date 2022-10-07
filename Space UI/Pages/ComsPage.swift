@@ -1,5 +1,5 @@
 //
-//  CommunicationsView.swift
+//  ComsPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2019-12-15.
@@ -9,7 +9,7 @@
 import SwiftUI
 import GameplayKit
 
-struct ComsView: View {
+struct ComsPage: View {
     
     @ObservedObject var messagesState = ShipData.shared.messagesState
     
@@ -41,6 +41,6 @@ struct ComsView: View {
 
 struct ComsView_Previews: PreviewProvider {
     static var previews: some View {
-        ComsView()
+        ComsPage()
     }
 }

@@ -10,11 +10,13 @@ import SwiftUI
 
 struct TutorialView: View {
     
-    #if targetEnvironment(macCatalyst)
-    let howToViewSeed = "Go to \"View Seed\" in the View menu to modify the seed."
-    #else
-    let howToViewSeed = "Double tap on any screen to modify the seed."
-    #endif
+    var howToViewSeed: String {
+        #if targetEnvironment(macCatalyst)
+        "Go to \"View Seed\" in the View menu to modify the seed."
+        #else
+        "Double tap on any screen to modify the seed."
+        #endif
+    }
     
     @Environment(\.dismiss) var dismiss
     

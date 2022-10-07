@@ -12,7 +12,7 @@ extension ScreenShapeCase: Identifiable {
     var id: Self { self }
 }
 
-struct SeedView: View {
+struct SeedPage: View {
     
     let allScreenShapeCases: [ScreenShapeCase] = [
         .circle, // This is actually used to remove the override
@@ -51,7 +51,7 @@ struct SeedView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section {
+                SwiftUI.Section {
                     TextField("Seed", text: self.$seedCopy, onCommit: {
                         self.saveSeed()
                     })
@@ -137,6 +137,6 @@ struct SeedView: View {
 
 struct SeedView_Previews: PreviewProvider {
     static var previews: some View {
-        SeedView()
+        SeedPage()
     }
 }

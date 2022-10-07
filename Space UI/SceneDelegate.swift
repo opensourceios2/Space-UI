@@ -13,14 +13,14 @@ var iwindow: UIWindow?
 var externalWindow: UIWindow?
 var rootHostingController: HostingController?
 var nextEmergencyTimer: Timer?
-var visibleInterface = Interface.lockScreen
-var savedInterface = Interface.lockScreen
+var visiblePage = Page.lockScreen
+var savedPage = Page.lockScreen
 #if DEBUG
 var debugShowingExternalDisplay = false
 #endif
 
 func replaceRootView() {
-    rootHostingController = HostingController(rootView: RootView(isExternal: false, interface: visibleInterface, systemAppearance: system))
+    rootHostingController = HostingController(rootView: RootView(isExternal: false, currentPage: visiblePage, systemAppearance: system))
     rootHostingController?.overrideUserInterfaceStyle = .dark
     rootHostingController?.view.backgroundColor = .black
     iwindow?.rootViewController = rootHostingController
@@ -28,7 +28,7 @@ func replaceRootView() {
     iwindow?.tintColor = tintColor
     
     if let exWindow = externalWindow {
-        exWindow.rootViewController = HostingController(rootView: RootView(isExternal: true, interface: .externalDisplay, systemAppearance: system))
+        exWindow.rootViewController = HostingController(rootView: RootView(isExternal: true, currentPage: .externalDisplay, systemAppearance: system))
         exWindow.rootViewController?.overrideUserInterfaceStyle = .dark
         exWindow.rootViewController?.view.backgroundColor = .black
         exWindow.tintColor = tintColor
@@ -46,7 +46,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let isExternalDisplay = (session.role == .windowExternalDisplayNonInteractive)
 
         // Create the SwiftUI view that provides the window contents.
-        let rootView = RootView(isExternal: isExternalDisplay, interface: isExternalDisplay ? .externalDisplay : visibleInterface, systemAppearance: system)
+        let rootView = RootView(isExternal: isExternalDisplay, currentPage: isExternalDisplay ? .externalDisplay : visiblePage, systemAppearance: system)
 
         // Use a UIHostingController as window root view controller.
         if let windowScene = scene as? UIWindowScene {

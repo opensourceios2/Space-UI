@@ -1,5 +1,5 @@
 //
-//  BrokenKeypadView.swift
+//  UnlabeledKeypadPage.swift
 //  Space UI
 //
 //  Created by Jayden Irwin on 2020-06-16.
@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct UnlabeledKeypadView: View {
+struct UnlabeledKeypadPage: View {
     
     private let cellLength: CGFloat = 100
     private let solution: String = {
@@ -80,8 +80,8 @@ struct UnlabeledKeypadView: View {
     
 }
 
-struct UnlabeledKeypadView_Previews: PreviewProvider {
+struct UnlabeledKeypadPage_Previews: PreviewProvider {
     static var previews: some View {
-        UnlabeledKeypadView()
+        UnlabeledKeypadPage()
     }
 }

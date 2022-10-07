@@ -62,7 +62,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     @objc func viewSeed() {
-        visibleInterface = .seed
+        visiblePage = .seed
         NotificationCenter.default.post(name: NSNotification.Name("navigate"), object: nil)
     }
     
